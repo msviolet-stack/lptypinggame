@@ -3,80 +3,96 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Typing Playground — Maze Munch</title>
+  <title>Maze Munch</title>
   <style>
     :root{
-      --bg1:#A8D8F0;
-      --bg2:#c8f3ff;
-      --bg3:#e7fff6;
-      --purple:#5b5fc7;
-      --ink:#23304a;
-      --panel: rgba(255,255,255,.85);
-      --panelBorder: rgba(91,95,199,.18);
-      --wall:#1f4cff;
-      --wallGlow: rgba(31,76,255,.35);
-      --mazeBg:#061227;
-      --dot:#ffd166;
-      --exit:#ff6b6b;
-      --pac:#ffe66d;
+      /* Pastel sky */
+      --sky1:#bfe8ff;
+      --sky2:#d7f3ff;
+      --sky3:#eafcff;
+
+      --purple:#6b6fe8;
+      --purple2:#8a8df2;
+      --ink:#2b3352;
+
+      --panel: rgba(255,255,255,.86);
+      --panelBorder: rgba(107,111,232,.18);
+
+      /* Maze palette (still Pac-man-ish but softer) */
+      --mazeBg:#0c1a33;          /* deep navy */
+      --wall:#4f7dff;           /* softer blue */
+      --wallGlow: rgba(79,125,255,.35);
+
+      --dotGlow: rgba(255,219,138,.18);
+      --dotText: rgba(255,219,138,.96);
+
+      --exit:#ff7f9e;           /* pastel red-pink */
+      --pac:#ffe88a;            /* pastel yellow */
+
+      /* Keyboard */
+      --key:#f7fbff;
+      --keyBorder:#c9d9ef;
+      --lit1:#ffe9a8;
+      --lit2:#ff9bb0;
+
+      --shadow: 0 12px 32px rgba(22,34,68,.14);
     }
+
     body{
       margin:0;
       font-family: "Comic Sans MS", system-ui, -apple-system, Segoe UI, Arial, sans-serif;
-      background: linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 60%, var(--bg3) 100%);
+      background: linear-gradient(180deg, var(--sky1) 0%, var(--sky2) 60%, var(--sky3) 100%);
       color: var(--ink);
       text-align:center;
     }
-    .wrap{ max-width:1100px; margin:0 auto; padding:18px 14px 30px; }
+
+    .wrap{ max-width:1100px; margin:0 auto; padding:18px 14px 28px; }
+
     .title{
-      margin: 10px auto 6px;
-      font-size: clamp(34px, 5vw, 56px);
+      margin: 8px auto 6px;
+      font-size: clamp(38px, 5.4vw, 64px);
       letter-spacing: 1px;
       color: var(--purple);
-      text-shadow: 0 2px 0 rgba(255,255,255,.7);
+      text-shadow: 0 3px 0 rgba(255,255,255,.8);
       font-weight: 900;
     }
     .subtitle{
-      margin: 0 0 12px;
+      margin: 0 0 10px;
       font-size: clamp(14px, 2.2vw, 18px);
-      color: #3f4aa8;
+      color: #4450d6;
       font-weight: 800;
       line-height: 1.35;
     }
+
     .card{
       background: var(--panel);
       border: 2px solid rgba(255,255,255,.95);
       border-radius: 18px;
-      box-shadow: 0 10px 30px rgba(17,38,74,.12);
+      box-shadow: var(--shadow);
       padding: 14px 14px 18px;
       backdrop-filter: blur(6px);
     }
-    .topbar{
-      display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap;
-      margin-bottom: 10px;
+
+    /* Center time */
+    .centerBar{
+      display:flex;
+      justify-content:center;
+      margin: 8px 0 10px;
     }
+
     .pill{
-      display:inline-flex; align-items:center; gap:8px;
-      padding: 10px 14px;
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      padding: 10px 18px;
       border-radius: 999px;
       background: rgba(255,255,255,.92);
       border: 2px solid var(--panelBorder);
       color: var(--purple);
       font-weight: 900;
-    }
-    .btnRow{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:10px; }
-    button{
       font-size: 18px;
-      font-weight: 900;
-      padding: 10px 16px;
-      border-radius: 14px;
-      border: 0;
-      cursor:pointer;
-      background: #ffd166;
-      box-shadow: 0 6px 0 rgba(0,0,0,.08);
+      box-shadow: 0 6px 0 rgba(0,0,0,.05);
     }
-    button:hover{ filter: brightness(0.98); transform: translateY(1px); }
-    button:active{ transform: translateY(2px); }
 
     .help{
       max-width: 980px;
@@ -86,15 +102,15 @@
       background: rgba(255,255,255,.92);
       border: 2px solid var(--panelBorder);
       font-weight: 900;
-      color: #3f4aa8;
-      line-height: 1.35;
+      color: #4450d6;
+      line-height: 1.4;
     }
     .kbd{
       display:inline-block;
       padding: 2px 8px;
       border-radius: 10px;
-      background: rgba(91,95,199,.12);
-      border: 1px solid rgba(91,95,199,.25);
+      background: rgba(107,111,232,.12);
+      border: 1px solid rgba(107,111,232,.25);
       font-weight: 900;
       color: var(--purple);
     }
@@ -108,33 +124,110 @@
       width: min(920px, 96vw);
       height: auto;
       border-radius: 18px;
-      background: #061227;
+      background: var(--mazeBg);
       box-shadow: 0 14px 32px rgba(0,0,0,.18);
-      border: 3px solid rgba(255,255,255,.65);
+      border: 3px solid rgba(255,255,255,.75);
     }
 
     .status{
-      font-size: 28px;
+      font-size: 26px;
       font-weight: 900;
       margin-top: 10px;
       min-height: 40px;
-      color: #3f4aa8;
+      color: #4450d6;
+    }
+
+    .btnRow{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:10px; }
+    button{
+      font-size: 18px;
+      font-weight: 900;
+      padding: 10px 16px;
+      border-radius: 14px;
+      border: 0;
+      cursor:pointer;
+      background: #ffe18b;
+      box-shadow: 0 6px 0 rgba(0,0,0,.08);
+    }
+    button:hover{ filter: brightness(0.98); transform: translateY(1px); }
+    button:active{ transform: translateY(2px); }
+
+    /* ===== Assisting Keyboard (always visible) ===== */
+    .keyboard{
+      margin: 14px auto 0;
+      max-width: 980px;
+      background: rgba(255,255,255,.75);
+      border: 2px solid rgba(255,255,255,.95);
+      border-radius: 18px;
+      padding: 14px 12px;
+      box-shadow: 0 10px 22px rgba(0,0,0,.10);
+    }
+    .row{
+      display:flex;
+      justify-content:center;
+      gap: 8px;
+      margin: 7px 0;
+      flex-wrap: nowrap;
+    }
+    .key{
+      min-width: 46px;
+      height: 48px;
+      border-radius: 14px;
+      background: var(--key);
+      border: 2px solid var(--keyBorder);
+      box-shadow: 0 4px 0 rgba(0,0,0,.06);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight: 900;
+      color: var(--ink);
+      user-select:none;
+      position:relative;
+      font-size: 18px;
+      padding: 0 6px;
+    }
+    .key.wide{ min-width: 86px; }
+    .key.xwide{ min-width: 122px; }
+    .key.space{ min-width: 320px; }
+
+    .key.lit{
+      background: linear-gradient(180deg, var(--lit1), var(--lit2));
+      border-color: rgba(255,155,176,.75);
+      color: #1b2233;
+      box-shadow: 0 0 0 4px rgba(255,155,176,.18), 0 8px 0 rgba(0,0,0,.08);
+      transform: translateY(-1px);
+    }
+
+    .key .sub{
+      position:absolute;
+      bottom: 4px;
+      right: 6px;
+      font-size: 10px;
+      opacity:.55;
+      font-weight: 800;
+    }
+
+    @media (max-width: 760px){
+      .key.space{ min-width: 230px; }
+      .key{ min-width: 38px; height: 44px; border-radius: 12px; }
+      .key.wide{ min-width: 70px; }
+      .key.xwide{ min-width: 98px; }
     }
   </style>
 </head>
 
 <body>
   <div class="wrap">
-    <div class="title">Typing Playground</div>
+    <div class="title">Maze Munch</div>
     <div class="subtitle">Play. Practise. Power Up! A fun way to build your typing power at Chongfu School.</div>
 
     <div class="card">
-      <div class="topbar">
-        <div class="pill" id="modePill">Maze Munch</div>
+
+      <!-- Time centered -->
+      <div class="centerBar">
         <div class="pill" id="timePill">Time: 60</div>
       </div>
 
-      <div class="help">
+      <div class="help" id="helpBox">
         ✅ <span class="kbd">Type the letter</span> on a dot <span class="kbd">next to Pac-Man</span> to move and eat it.<br/>
         🎯 Reach the <span class="kbd">RED exit</span> before time runs out! (No score needed.)
       </div>
@@ -145,6 +238,34 @@
 
       <div class="status" id="status"></div>
 
+      <!-- Assisting keyboard (always visible) -->
+      <div class="keyboard" aria-label="Assisting keyboard">
+        <div class="row">
+          <div class="key" data-key="q">Q</div><div class="key" data-key="w">W</div><div class="key" data-key="e">E</div>
+          <div class="key" data-key="r">R</div><div class="key" data-key="t">T</div><div class="key" data-key="y">Y</div>
+          <div class="key" data-key="u">U</div><div class="key" data-key="i">I</div><div class="key" data-key="o">O</div>
+          <div class="key" data-key="p">P</div>
+        </div>
+        <div class="row">
+          <div class="key" data-key="a">A</div><div class="key" data-key="s">S</div><div class="key" data-key="d">D</div>
+          <div class="key" data-key="f">F</div><div class="key" data-key="g">G</div><div class="key" data-key="h">H</div>
+          <div class="key" data-key="j">J</div><div class="key" data-key="k">K</div><div class="key" data-key="l">L</div>
+        </div>
+        <div class="row">
+          <div class="key" data-key="z">Z</div><div class="key" data-key="x">X</div><div class="key" data-key="c">C</div>
+          <div class="key" data-key="v">V</div><div class="key" data-key="b">B</div><div class="key" data-key="n">N</div>
+          <div class="key" data-key="m">M</div>
+        </div>
+        <div class="row">
+          <div class="key" data-key=".">.</div>
+          <div class="key" data-key=",">,</div>
+          <div class="key" data-key="_">_</div>
+          <div class="key" data-key="!">!</div>
+          <div class="key" data-key="@">@</div>
+          <div class="key space" data-key=" "><span>SPACE</span><span class="sub">sp</span></div>
+        </div>
+      </div>
+
       <div class="btnRow">
         <button id="startBtn">Start</button>
         <button id="restartBtn">Restart</button>
@@ -154,21 +275,7 @@
 
 <script>
 (() => {
-  // ========= MAZE LAYOUT =========
-  // Legend:
-  // 1 = wall
-  // 0 = path (will have a letter-dot unless it's start/exit)
-  // S = start
-  // E = exit
-  //
-  // This is a simple, kid-friendly maze (not too tight).
-  const MAZE = [
-    "111111111111111111111",
-    "1S0000000100000000001",
-    "1011111110101111111101".replace(/0/g,'0').replace(/11/g,'11'), // keep as string; harmless line
-  ];
-
-  // We'll build a fixed grid directly (more control):
+  // ===== Maze grid =====
   const GRID = [
     "111111111111111111111",
     "1S0000000100000000001",
@@ -185,23 +292,25 @@
     "111111111111111111111"
   ];
 
-  // ========= GAME SETTINGS =========
   const TOTAL_SECONDS = 60;
   const LETTERS = "abcdefghijklmnopqrstuvwxyz";
 
-  // ========= CANVAS SETUP =========
+  // canvas
   const canvas = document.getElementById("c");
   const ctx = canvas.getContext("2d");
 
+  // UI
   const timePill = document.getElementById("timePill");
   const statusEl = document.getElementById("status");
   const startBtn = document.getElementById("startBtn");
   const restartBtn = document.getElementById("restartBtn");
 
+  // keyboard keys
+  const keyEls = Array.from(document.querySelectorAll(".key"));
+
   const rows = GRID.length;
   const cols = GRID[0].length;
 
-  // Cell sizing to fit canvas nicely
   const pad = 16;
   const cell = Math.floor(Math.min(
     (canvas.width - pad*2) / cols,
@@ -210,7 +319,7 @@
   const originX = Math.floor((canvas.width - cols*cell) / 2);
   const originY = Math.floor((canvas.height - rows*cell) / 2);
 
-  // ========= STATE =========
+  // state
   let running = false;
   let timeLeft = TOTAL_SECONDS;
   let secondTimer = null;
@@ -218,53 +327,66 @@
   let startPos = null;
   let exitPos = null;
 
-  // dots: map "r,c" -> letter (only on path cells with dots)
-  let dots = new Map();
-
-  // pacman position
+  let dots = new Map();  // "r,c" -> letter
   let pr = 0, pc = 0;
 
-  // ========= HELPERS =========
+  // helpers
   const keyOf = (r,c) => `${r},${c}`;
+  const inBounds = (r,c) => r>=0 && r<rows && c>=0 && c<cols;
   const isWall = (r,c) => GRID[r][c] === "1";
   const isStart = (r,c) => GRID[r][c] === "S";
   const isExit  = (r,c) => GRID[r][c] === "E";
-  const inBounds = (r,c) => r>=0 && r<rows && c>=0 && c<cols;
+
+  function getCSS(varName){
+    return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+  }
+
+  function clearKeyLights(){
+    keyEls.forEach(k => k.classList.remove("lit"));
+  }
+
+  function lightKeyFor(ch){
+    clearKeyLights();
+    const matches = keyEls.filter(k => k.dataset.key === ch);
+    matches.forEach(m => m.classList.add("lit"));
+  }
 
   function resetGame(){
     running = false;
     clearInterval(secondTimer);
     timeLeft = TOTAL_SECONDS;
     timePill.textContent = `Time: ${timeLeft}`;
-    statusEl.textContent = "";
+    statusEl.textContent = "Press Start to begin!";
+    clearKeyLights();
 
     // find start + exit
     startPos = null; exitPos = null;
     for(let r=0;r<rows;r++){
       for(let c=0;c<cols;c++){
         if (isStart(r,c)) startPos = {r,c};
-        if (isExit(r,c)) exitPos  = {r,c};
+        if (isExit(r,c))  exitPos  = {r,c};
       }
     }
     pr = startPos.r; pc = startPos.c;
 
-    // place dots with letters on every path cell except start/exit
+    // dots on every "0"
     dots = new Map();
     for(let r=0;r<rows;r++){
       for(let c=0;c<cols;c++){
-        const ch = GRID[r][c];
-        if (ch === "0") {
+        if (GRID[r][c] === "0"){
           dots.set(keyOf(r,c), LETTERS[Math.floor(Math.random()*LETTERS.length)]);
         }
       }
     }
+
     draw();
+    updateKeyboardHint(); // light an adjacent letter if possible
   }
 
   function startGame(){
     if (running) return;
     running = true;
-    statusEl.textContent = "Go! Type the letter on a dot next to Pac-Man!";
+    statusEl.textContent = "Go! Type the glowing letter next to Pac-Man!";
     secondTimer = setInterval(() => {
       if (!running) return;
       timeLeft--;
@@ -272,6 +394,7 @@
       if (timeLeft <= 0){
         running = false;
         statusEl.textContent = "⏰ Time’s up! Press Restart and try again.";
+        clearKeyLights();
       }
     }, 1000);
   }
@@ -280,28 +403,42 @@
     running = false;
     clearInterval(secondTimer);
     statusEl.textContent = "🎉 You escaped the maze! Well done!";
+    clearKeyLights();
   }
 
   function adjacentTargets(){
-    // Returns adjacent dot cells with their letters
     const dirs = [
-      {dr:-1,dc:0}, {dr:1,dc:0}, {dr:0,dc:-1}, {dr:0,dc:1}
+      {dr:-1,dc:0},{dr:1,dc:0},{dr:0,dc:-1},{dr:0,dc:1}
     ];
     const out = [];
     for (const d of dirs){
       const nr = pr + d.dr, nc = pc + d.dc;
       if (!inBounds(nr,nc) || isWall(nr,nc)) continue;
-
       const k = keyOf(nr,nc);
-      // dot exists only on "0" cells (paths). Start/exit have none.
       if (dots.has(k)){
         out.push({r:nr,c:nc,letter:dots.get(k)});
-      } else {
-        // allow moving onto exit even without a dot
-        if (isExit(nr,nc)) out.push({r:nr,c:nc,letter:null,exit:true});
+      } else if (isExit(nr,nc)){
+        out.push({r:nr,c:nc,exit:true});
       }
     }
     return out;
+  }
+
+  function updateKeyboardHint(){
+    if (!running) {
+      // still show a hint key when idle (nice for kids)
+      const adj = adjacentTargets();
+      const firstLetter = adj.find(a => a.letter)?.letter;
+      if (firstLetter) lightKeyFor(firstLetter);
+      return;
+    }
+    const adj = adjacentTargets();
+    const firstLetter = adj.find(a => a.letter)?.letter;
+    if (firstLetter) {
+      lightKeyFor(firstLetter);
+    } else {
+      clearKeyLights();
+    }
   }
 
   function handleKey(e){
@@ -309,27 +446,25 @@
 
     const k = e.key;
     if (!k || k.length !== 1) return;
-
     const pressed = k.toLowerCase();
 
-    // If pressed matches a letter-dot adjacent, move there and eat it
     const adj = adjacentTargets();
-
-    // exit move (optional): allow Enter to go into exit? but keep consistent: must type letter, so exit is reached by stepping onto exit cell from adjacent path.
     const match = adj.find(t => t.letter === pressed);
 
     if (match){
       pr = match.r; pc = match.c;
       dots.delete(keyOf(pr,pc)); // eat dot
       draw();
+
+      // check win
+      if (isExit(pr,pc)) winGame();
+
+      updateKeyboardHint();
       return;
     }
 
-    // Also allow stepping into exit if adjacent and player presses ANY key shown? Keep simple:
-    // If exit is adjacent, they can move into it by typing the letter on the adjacent dot that leads there.
-    // But sometimes exit is adjacent directly from path with no dot on exit cell, so just allow a special key: "e"
-    // Better: if exit is adjacent and pressed is "e", move into exit (kid-friendly).
-    const exitAdj = adj.find(t => t.exit);
+    // allow stepping into exit with "e" if adjacent (kid-friendly)
+    const exitAdj = adj.find(a => a.exit);
     if (exitAdj && pressed === "e"){
       pr = exitAdj.r; pc = exitAdj.c;
       draw();
@@ -337,129 +472,10 @@
     }
   }
 
-  // ========= DRAWING =========
   function cellRect(r,c){
     const x = originX + c*cell;
     const y = originY + r*cell;
     return {x,y,w:cell,h:cell};
-  }
-
-  function draw(){
-    // background
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    ctx.fillStyle = getCSS("--mazeBg");
-    ctx.fillRect(0,0,canvas.width,canvas.height);
-
-    // subtle glow border
-    ctx.strokeStyle = "rgba(255,255,255,.25)";
-    ctx.lineWidth = 6;
-    ctx.strokeRect(8,8,canvas.width-16,canvas.height-16);
-
-    // walls + paths
-    for(let r=0;r<rows;r++){
-      for(let c=0;c<cols;c++){
-        const {x,y,w,h} = cellRect(r,c);
-        const ch = GRID[r][c];
-
-        if (ch === "1"){
-          // wall
-          ctx.fillStyle = getCSS("--wallGlow");
-          ctx.fillRect(x-1,y-1,w+2,h+2);
-
-          ctx.fillStyle = getCSS("--wall");
-          roundRect(ctx, x+2, y+2, w-4, h-4, 8);
-          ctx.fill();
-        } else {
-          // path (dark)
-          ctx.fillStyle = "rgba(255,255,255,.02)";
-          ctx.fillRect(x,y,w,h);
-        }
-
-        // exit
-        if (ch === "E"){
-          ctx.fillStyle = "rgba(255,107,107,.25)";
-          roundRect(ctx, x+4, y+4, w-8, h-8, 10); ctx.fill();
-          ctx.strokeStyle = "rgba(255,107,107,.9)";
-          ctx.lineWidth = 3;
-          roundRect(ctx, x+6, y+6, w-12, h-12, 10); ctx.stroke();
-
-          ctx.fillStyle = "rgba(255,255,255,.95)";
-          ctx.font = `900 ${Math.floor(cell*0.45)}px Comic Sans MS, Arial`;
-          ctx.textAlign = "center"; ctx.textBaseline = "middle";
-          ctx.fillText("EXIT", x+w/2, y+h/2);
-        }
-      }
-    }
-
-    // dots with letters
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.font = `900 ${Math.floor(cell*0.44)}px ui-monospace, Menlo, Consolas, monospace`;
-
-    for (const [k,letter] of dots.entries()){
-      const [r,c] = k.split(",").map(Number);
-      const {x,y,w,h} = cellRect(r,c);
-
-      // dot circle
-      ctx.fillStyle = "rgba(255,209,102,.18)";
-      ctx.beginPath();
-      ctx.arc(x+w/2, y+h/2, Math.max(6, cell*0.28), 0, Math.PI*2);
-      ctx.fill();
-
-      // letter
-      ctx.fillStyle = "rgba(255,209,102,.95)";
-      ctx.fillText(letter.toUpperCase(), x+w/2, y+h/2);
-    }
-
-    // Pac-Man
-    drawPacman(pr,pc);
-
-    // Hint: show letters adjacent (optional visual cue)
-    drawAdjHint();
-  }
-
-  function drawPacman(r,c){
-    const {x,y,w,h} = cellRect(r,c);
-    const cx = x+w/2, cy = y+h/2;
-    const radius = Math.max(10, cell*0.38);
-
-    // mouth animation based on time
-    const t = Date.now()/200;
-    const mouth = 0.35 + 0.12*Math.abs(Math.sin(t));
-
-    ctx.fillStyle = getCSS("--pac");
-    ctx.beginPath();
-    ctx.moveTo(cx,cy);
-    ctx.arc(cx,cy,radius,mouth,Math.PI*2-mouth,false);
-    ctx.closePath();
-    ctx.fill();
-
-    // eye
-    ctx.fillStyle = "rgba(0,0,0,.7)";
-    ctx.beginPath();
-    ctx.arc(cx + radius*0.15, cy - radius*0.35, Math.max(2, radius*0.10), 0, Math.PI*2);
-    ctx.fill();
-  }
-
-  function drawAdjHint(){
-    const adj = adjacentTargets();
-    if (!adj.length) return;
-
-    // Glow outline around adjacent letter-dots (teaching cue)
-    for (const t of adj){
-      if (t.exit) continue;
-      const {x,y,w,h} = cellRect(t.r,t.c);
-      ctx.strokeStyle = "rgba(255,255,255,.25)";
-      ctx.lineWidth = 3;
-      roundRect(ctx, x+6, y+6, w-12, h-12, 10);
-      ctx.stroke();
-    }
-
-    // If exit adjacent, show small "Press E to exit" helper (kid-friendly)
-    const exitAdj = adj.find(a => a.exit);
-    if (exitAdj){
-      statusEl.textContent = "Exit is near! Press E to step into EXIT.";
-    }
   }
 
   function roundRect(ctx, x, y, w, h, r){
@@ -473,13 +489,118 @@
     ctx.closePath();
   }
 
-  function getCSS(varName){
-    return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+  function draw(){
+    // background
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = getCSS("--mazeBg");
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    // subtle border
+    ctx.strokeStyle = "rgba(255,255,255,.25)";
+    ctx.lineWidth = 6;
+    ctx.strokeRect(8,8,canvas.width-16,canvas.height-16);
+
+    // walls + paths + exit
+    for(let r=0;r<rows;r++){
+      for(let c=0;c<cols;c++){
+        const {x,y,w,h} = cellRect(r,c);
+        const ch = GRID[r][c];
+
+        if (ch === "1"){
+          ctx.fillStyle = getCSS("--wallGlow");
+          ctx.fillRect(x-1,y-1,w+2,h+2);
+
+          ctx.fillStyle = getCSS("--wall");
+          roundRect(ctx, x+2, y+2, w-4, h-4, 8);
+          ctx.fill();
+        } else {
+          ctx.fillStyle = "rgba(255,255,255,.02)";
+          ctx.fillRect(x,y,w,h);
+        }
+
+        if (ch === "E"){
+          ctx.fillStyle = "rgba(255,127,158,.25)";
+          roundRect(ctx, x+4, y+4, w-8, h-8, 10); ctx.fill();
+          ctx.strokeStyle = "rgba(255,127,158,.9)";
+          ctx.lineWidth = 3;
+          roundRect(ctx, x+6, y+6, w-12, h-12, 10); ctx.stroke();
+
+          ctx.fillStyle = "rgba(255,255,255,.95)";
+          ctx.font = `900 ${Math.floor(cell*0.45)}px Comic Sans MS, Arial`;
+          ctx.textAlign = "center"; ctx.textBaseline = "middle";
+          ctx.fillText("EXIT", x+w/2, y+h/2);
+        }
+      }
+    }
+
+    // dots letters
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.font = `900 ${Math.floor(cell*0.44)}px ui-monospace, Menlo, Consolas, monospace`;
+
+    for (const [k,letter] of dots.entries()){
+      const [r,c] = k.split(",").map(Number);
+      const {x,y,w,h} = cellRect(r,c);
+
+      ctx.fillStyle = getCSS("--dotGlow");
+      ctx.beginPath();
+      ctx.arc(x+w/2, y+h/2, Math.max(6, cell*0.28), 0, Math.PI*2);
+      ctx.fill();
+
+      ctx.fillStyle = getCSS("--dotText");
+      ctx.fillText(letter.toUpperCase(), x+w/2, y+h/2);
+    }
+
+    // Pac-Man
+    drawPacman(pr,pc);
+
+    // Highlight adjacent dot squares slightly (visual assist)
+    drawAdjHint();
   }
 
-  // ========= EVENTS =========
-  startBtn.addEventListener("click", startGame);
-  restartBtn.addEventListener("click", () => { resetGame(); startGame(); });
+  function drawPacman(r,c){
+    const {x,y,w,h} = cellRect(r,c);
+    const cx = x+w/2, cy = y+h/2;
+    const radius = Math.max(10, cell*0.38);
+
+    const t = Date.now()/200;
+    const mouth = 0.35 + 0.12*Math.abs(Math.sin(t));
+
+    ctx.fillStyle = getCSS("--pac");
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.arc(cx,cy,radius,mouth,Math.PI*2-mouth,false);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = "rgba(0,0,0,.65)";
+    ctx.beginPath();
+    ctx.arc(cx + radius*0.15, cy - radius*0.35, Math.max(2, radius*0.10), 0, Math.PI*2);
+    ctx.fill();
+  }
+
+  function drawAdjHint(){
+    const adj = adjacentTargets();
+    if (!adj.length) return;
+
+    for (const t of adj){
+      if (t.exit) continue;
+      const {x,y,w,h} = cellRect(t.r,t.c);
+      ctx.strokeStyle = "rgba(255,255,255,.20)";
+      ctx.lineWidth = 3;
+      roundRect(ctx, x+6, y+6, w-12, h-12, 10);
+      ctx.stroke();
+    }
+
+    const exitAdj = adj.find(a => a.exit);
+    if (exitAdj){
+      statusEl.textContent = "Exit is near! Press E to step into EXIT.";
+    }
+  }
+
+  // events
+  startBtn.addEventListener("click", () => { startGame(); updateKeyboardHint(); });
+  restartBtn.addEventListener("click", () => { resetGame(); startGame(); updateKeyboardHint(); });
   document.addEventListener("keydown", handleKey);
 
   // init
