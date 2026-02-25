@@ -6,32 +6,31 @@
   <title>Maze Munch</title>
   <style>
     :root{
-      /* Pastel sky */
       --sky1:#bfe8ff;
       --sky2:#d7f3ff;
       --sky3:#eafcff;
 
       --purple:#6b6fe8;
-      --purple2:#8a8df2;
+      --purpleDark:#4450d6;
       --ink:#2b3352;
 
       --panel: rgba(255,255,255,.86);
       --panelBorder: rgba(107,111,232,.18);
 
-      /* Maze palette (still Pac-man-ish but softer) */
-      --mazeBg:#0c1a33;          /* deep navy */
-      --wall:#4f7dff;           /* softer blue */
+      --mazeBg:#0c1a33;
+      --wall:#4f7dff;
       --wallGlow: rgba(79,125,255,.35);
 
       --dotGlow: rgba(255,219,138,.18);
       --dotText: rgba(255,219,138,.96);
 
-      --exit:#ff7f9e;           /* pastel red-pink */
-      --pac:#ffe88a;            /* pastel yellow */
+      --exit:#ff7f9e;
+      --pac:#ffe88a;
 
-      /* Keyboard */
       --key:#f7fbff;
       --keyBorder:#c9d9ef;
+      --keyInk:#2b3352;
+
       --lit1:#ffe9a8;
       --lit2:#ff9bb0;
 
@@ -46,7 +45,7 @@
       text-align:center;
     }
 
-    .wrap{ max-width:1100px; margin:0 auto; padding:18px 14px 28px; }
+    .wrap{ max-width:1100px; margin:0 auto; padding:18px 14px 24px; }
 
     .title{
       margin: 8px auto 6px;
@@ -59,7 +58,7 @@
     .subtitle{
       margin: 0 0 10px;
       font-size: clamp(14px, 2.2vw, 18px);
-      color: #4450d6;
+      color: var(--purpleDark);
       font-weight: 800;
       line-height: 1.35;
     }
@@ -69,7 +68,7 @@
       border: 2px solid rgba(255,255,255,.95);
       border-radius: 18px;
       box-shadow: var(--shadow);
-      padding: 14px 14px 18px;
+      padding: 14px 14px 16px;
       backdrop-filter: blur(6px);
     }
 
@@ -79,7 +78,6 @@
       justify-content:center;
       margin: 8px 0 10px;
     }
-
     .pill{
       display:inline-flex;
       align-items:center;
@@ -92,27 +90,8 @@
       font-weight: 900;
       font-size: 18px;
       box-shadow: 0 6px 0 rgba(0,0,0,.05);
-    }
-
-    .help{
-      max-width: 980px;
-      margin: 10px auto 12px;
-      padding: 12px 12px;
-      border-radius: 16px;
-      background: rgba(255,255,255,.92);
-      border: 2px solid var(--panelBorder);
-      font-weight: 900;
-      color: #4450d6;
-      line-height: 1.4;
-    }
-    .kbd{
-      display:inline-block;
-      padding: 2px 8px;
-      border-radius: 10px;
-      background: rgba(107,111,232,.12);
-      border: 1px solid rgba(107,111,232,.25);
-      font-weight: 900;
-      color: var(--purple);
+      min-width: 140px;
+      justify-content:center;
     }
 
     .boardWrap{
@@ -129,15 +108,38 @@
       border: 3px solid rgba(255,255,255,.75);
     }
 
-    .status{
-      font-size: 26px;
+    /* Instruction between maze and keyboard */
+    .help{
+      max-width: 980px;
+      margin: 12px auto 12px;
+      padding: 12px 12px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.92);
+      border: 2px solid var(--panelBorder);
       font-weight: 900;
-      margin-top: 10px;
-      min-height: 40px;
-      color: #4450d6;
+      color: var(--purpleDark);
+      line-height: 1.4;
+    }
+    .kbd{
+      display:inline-block;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background: rgba(107,111,232,.12);
+      border: 1px solid rgba(107,111,232,.25);
+      font-weight: 900;
+      color: var(--purple);
+      white-space: nowrap;
     }
 
-    .btnRow{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:10px; }
+    .status{
+      font-size: 22px;
+      font-weight: 900;
+      margin: 10px 0 0;
+      min-height: 30px;
+      color: var(--purpleDark);
+    }
+
+    .btnRow{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:12px; }
     button{
       font-size: 18px;
       font-weight: 900;
@@ -151,7 +153,7 @@
     button:hover{ filter: brightness(0.98); transform: translateY(1px); }
     button:active{ transform: translateY(2px); }
 
-    /* ===== Assisting Keyboard (always visible) ===== */
+    /* ===== Laptop-like keyboard ===== */
     .keyboard{
       margin: 14px auto 0;
       max-width: 980px;
@@ -168,9 +170,10 @@
       margin: 7px 0;
       flex-wrap: nowrap;
     }
+
     .key{
-      min-width: 46px;
-      height: 48px;
+      width: 54px;
+      height: 54px;
       border-radius: 14px;
       background: var(--key);
       border: 2px solid var(--keyBorder);
@@ -179,15 +182,41 @@
       align-items:center;
       justify-content:center;
       font-weight: 900;
-      color: var(--ink);
+      color: var(--keyInk);
       user-select:none;
       position:relative;
       font-size: 18px;
       padding: 0 6px;
     }
-    .key.wide{ min-width: 86px; }
-    .key.xwide{ min-width: 122px; }
-    .key.space{ min-width: 320px; }
+    .key.wide{ width: 92px; }
+    .key.xwide{ width: 132px; }
+    .key.space{ width: 360px; }
+    .key.tiny{ width: 46px; }
+
+    /* Key with two symbols (shifted / normal) */
+    .key.dual{
+      font-size: 0; /* hide big center text */
+    }
+    .key .top{
+      position:absolute;
+      top: 8px;
+      left: 10px;
+      font-size: 14px;
+      font-weight: 900;
+      opacity: .9;
+    }
+    .key .bot{
+      position:absolute;
+      bottom: 8px;
+      left: 10px;
+      font-size: 14px;
+      font-weight: 900;
+      opacity: .85;
+    }
+    .key .center{
+      font-size: 18px;
+      font-weight: 900;
+    }
 
     .key.lit{
       background: linear-gradient(180deg, var(--lit1), var(--lit2));
@@ -197,20 +226,12 @@
       transform: translateY(-1px);
     }
 
-    .key .sub{
-      position:absolute;
-      bottom: 4px;
-      right: 6px;
-      font-size: 10px;
-      opacity:.55;
-      font-weight: 800;
-    }
-
-    @media (max-width: 760px){
-      .key.space{ min-width: 230px; }
-      .key{ min-width: 38px; height: 44px; border-radius: 12px; }
-      .key.wide{ min-width: 70px; }
-      .key.xwide{ min-width: 98px; }
+    @media (max-width: 840px){
+      .key{ width: 46px; height: 50px; border-radius: 12px; }
+      .key.wide{ width: 76px; }
+      .key.xwide{ width: 108px; }
+      .key.space{ width: 240px; }
+      .key .top, .key .bot{ left: 8px; font-size: 13px; }
     }
   </style>
 </head>
@@ -221,54 +242,100 @@
     <div class="subtitle">Play. Practise. Power Up! A fun way to build your typing power at Chongfu School.</div>
 
     <div class="card">
-
-      <!-- Time centered -->
       <div class="centerBar">
-        <div class="pill" id="timePill">Time: 60</div>
-      </div>
-
-      <div class="help" id="helpBox">
-        ✅ <span class="kbd">Type the letter</span> on a dot <span class="kbd">next to Pac-Man</span> to move and eat it.<br/>
-        🎯 Reach the <span class="kbd">RED exit</span> before time runs out! (No score needed.)
+        <div class="pill" id="timePill">Time: 100</div>
       </div>
 
       <div class="boardWrap">
         <canvas id="c" width="920" height="560" aria-label="Maze typing game"></canvas>
       </div>
 
+      <!-- instructions between maze and keyboard -->
+      <div class="help" id="helpBox">
+        ✅ <span class="kbd">Type the letter</span> on a dot <span class="kbd">next to Pac-Man</span> to move and eat it.<br/>
+        🎯 Reach the <span class="kbd">RED exit</span> before time runs out!
+      </div>
+
       <div class="status" id="status"></div>
 
-      <!-- Assisting keyboard (always visible) -->
+      <!-- laptop-like keyboard -->
       <div class="keyboard" aria-label="Assisting keyboard">
+        <!-- number row (dual symbols) -->
         <div class="row">
-          <div class="key" data-key="q">Q</div><div class="key" data-key="w">W</div><div class="key" data-key="e">E</div>
-          <div class="key" data-key="r">R</div><div class="key" data-key="t">T</div><div class="key" data-key="y">Y</div>
-          <div class="key" data-key="u">U</div><div class="key" data-key="i">I</div><div class="key" data-key="o">O</div>
-          <div class="key" data-key="p">P</div>
+          <div class="key dual tiny" data-key="1" data-shift="!"><span class="top">!</span><span class="bot">1</span></div>
+          <div class="key dual tiny" data-key="2" data-shift="@"><span class="top">@</span><span class="bot">2</span></div>
+          <div class="key dual tiny" data-key="3" data-shift="#"><span class="top">#</span><span class="bot">3</span></div>
+          <div class="key dual tiny" data-key="4" data-shift="$"><span class="top">$</span><span class="bot">4</span></div>
+          <div class="key dual tiny" data-key="5" data-shift="%"><span class="top">%</span><span class="bot">5</span></div>
+          <div class="key dual tiny" data-key="6" data-shift="^"><span class="top">^</span><span class="bot">6</span></div>
+          <div class="key dual tiny" data-key="7" data-shift="&"><span class="top">&</span><span class="bot">7</span></div>
+          <div class="key dual tiny" data-key="8" data-shift="*"><span class="top">*</span><span class="bot">8</span></div>
+          <div class="key dual tiny" data-key="9" data-shift="("><span class="top">(</span><span class="bot">9</span></div>
+          <div class="key dual tiny" data-key="0" data-shift=")"><span class="top">)</span><span class="bot">0</span></div>
+          <div class="key dual tiny" data-key="-" data-shift="_"><span class="top">_</span><span class="bot">-</span></div>
+          <div class="key dual tiny" data-key="=" data-shift="+"><span class="top">+</span><span class="bot">=</span></div>
+          <div class="key xwide" data-key="Backspace"><span class="center">Backspace</span></div>
         </div>
+
         <div class="row">
-          <div class="key" data-key="a">A</div><div class="key" data-key="s">S</div><div class="key" data-key="d">D</div>
-          <div class="key" data-key="f">F</div><div class="key" data-key="g">G</div><div class="key" data-key="h">H</div>
-          <div class="key" data-key="j">J</div><div class="key" data-key="k">K</div><div class="key" data-key="l">L</div>
+          <div class="key wide" data-key="Tab"><span class="center">Tab</span></div>
+          <div class="key" data-key="q"><span class="center">Q</span></div>
+          <div class="key" data-key="w"><span class="center">W</span></div>
+          <div class="key" data-key="e"><span class="center">E</span></div>
+          <div class="key" data-key="r"><span class="center">R</span></div>
+          <div class="key" data-key="t"><span class="center">T</span></div>
+          <div class="key" data-key="y"><span class="center">Y</span></div>
+          <div class="key" data-key="u"><span class="center">U</span></div>
+          <div class="key" data-key="i"><span class="center">I</span></div>
+          <div class="key" data-key="o"><span class="center">O</span></div>
+          <div class="key" data-key="p"><span class="center">P</span></div>
+          <div class="key dual tiny" data-key="[" data-shift="{"><span class="top">{</span><span class="bot">[</span></div>
+          <div class="key dual tiny" data-key="]" data-shift="}"><span class="top">}</span><span class="bot">]</span></div>
         </div>
+
         <div class="row">
-          <div class="key" data-key="z">Z</div><div class="key" data-key="x">X</div><div class="key" data-key="c">C</div>
-          <div class="key" data-key="v">V</div><div class="key" data-key="b">B</div><div class="key" data-key="n">N</div>
-          <div class="key" data-key="m">M</div>
+          <div class="key xwide" data-key="CapsLock"><span class="center">Caps</span></div>
+          <div class="key" data-key="a"><span class="center">A</span></div>
+          <div class="key" data-key="s"><span class="center">S</span></div>
+          <div class="key" data-key="d"><span class="center">D</span></div>
+          <div class="key" data-key="f"><span class="center">F</span></div>
+          <div class="key" data-key="g"><span class="center">G</span></div>
+          <div class="key" data-key="h"><span class="center">H</span></div>
+          <div class="key" data-key="j"><span class="center">J</span></div>
+          <div class="key" data-key="k"><span class="center">K</span></div>
+          <div class="key" data-key="l"><span class="center">L</span></div>
+          <div class="key dual tiny" data-key=";" data-shift=":"><span class="top">:</span><span class="bot">;</span></div>
+          <div class="key dual tiny" data-key="'" data-shift="&quot;"><span class="top">"</span><span class="bot">'</span></div>
+          <div class="key xwide" data-key="Enter"><span class="center">Enter</span></div>
         </div>
+
         <div class="row">
-          <div class="key" data-key=".">.</div>
-          <div class="key" data-key=",">,</div>
-          <div class="key" data-key="_">_</div>
-          <div class="key" data-key="!">!</div>
-          <div class="key" data-key="@">@</div>
-          <div class="key space" data-key=" "><span>SPACE</span><span class="sub">sp</span></div>
+          <div class="key xwide" data-key="Shift"><span class="center">Shift</span></div>
+          <div class="key" data-key="z"><span class="center">Z</span></div>
+          <div class="key" data-key="x"><span class="center">X</span></div>
+          <div class="key" data-key="c"><span class="center">C</span></div>
+          <div class="key" data-key="v"><span class="center">V</span></div>
+          <div class="key" data-key="b"><span class="center">B</span></div>
+          <div class="key" data-key="n"><span class="center">N</span></div>
+          <div class="key" data-key="m"><span class="center">M</span></div>
+          <div class="key dual tiny" data-key="," data-shift="&lt;"><span class="top">&lt;</span><span class="bot">,</span></div>
+          <div class="key dual tiny" data-key="." data-shift="&gt;"><span class="top">&gt;</span><span class="bot">.</span></div>
+          <div class="key dual tiny" data-key="/" data-shift="?"><span class="top">?</span><span class="bot">/</span></div>
+          <div class="key xwide" data-key="Shift"><span class="center">Shift</span></div>
+        </div>
+
+        <div class="row">
+          <div class="key wide" data-key="Ctrl"><span class="center">Ctrl</span></div>
+          <div class="key wide" data-key="Alt"><span class="center">Alt</span></div>
+          <div class="key space" data-key=" "><span class="center">SPACE</span></div>
+          <div class="key wide" data-key="Alt"><span class="center">Alt</span></div>
+          <div class="key wide" data-key="Ctrl"><span class="center">Ctrl</span></div>
         </div>
       </div>
 
       <div class="btnRow">
-        <button id="startBtn">Start</button>
-        <button id="restartBtn">Restart</button>
+        <button id="level1Btn">Level 1 (Letters)</button>
+        <button id="level2Btn">Level 2 (Symbols)</button>
       </div>
     </div>
   </div>
@@ -292,20 +359,25 @@
     "111111111111111111111"
   ];
 
-  const TOTAL_SECONDS = 60;
-  const LETTERS = "abcdefghijklmnopqrstuvwxyz";
+  // Levels
+  const LEVELS = {
+    letters: { time: 100, set: "abcdefghijklmnopqrstuvwxyz" },
+    symbols: { time: 150, set: "! . @ , = - _ +".split(" ").join("") } // "! . @ , = - _ +" -> "! .@,=-_+"
+  };
 
-  // canvas
+  // Canvas
   const canvas = document.getElementById("c");
   const ctx = canvas.getContext("2d");
 
   // UI
   const timePill = document.getElementById("timePill");
   const statusEl = document.getElementById("status");
-  const startBtn = document.getElementById("startBtn");
-  const restartBtn = document.getElementById("restartBtn");
+  const helpBox = document.getElementById("helpBox");
 
-  // keyboard keys
+  const level1Btn = document.getElementById("level1Btn");
+  const level2Btn = document.getElementById("level2Btn");
+
+  // Keyboard
   const keyEls = Array.from(document.querySelectorAll(".key"));
 
   const rows = GRID.length;
@@ -319,18 +391,18 @@
   const originX = Math.floor((canvas.width - cols*cell) / 2);
   const originY = Math.floor((canvas.height - rows*cell) / 2);
 
-  // state
+  // State
   let running = false;
-  let timeLeft = TOTAL_SECONDS;
+  let timeLeft = 100;
   let secondTimer = null;
 
-  let startPos = null;
-  let exitPos = null;
+  let mode = "letters"; // "letters" | "symbols"
 
-  let dots = new Map();  // "r,c" -> letter
+  let startPos = null;
+  let dots = new Map();  // "r,c" -> char (letter or symbol)
   let pr = 0, pc = 0;
 
-  // helpers
+  // Helpers
   const keyOf = (r,c) => `${r},${c}`;
   const inBounds = (r,c) => r>=0 && r<rows && c>=0 && c<cols;
   const isWall = (r,c) => GRID[r][c] === "1";
@@ -345,55 +417,113 @@
     keyEls.forEach(k => k.classList.remove("lit"));
   }
 
-  function lightKeyFor(ch){
+  // Highlights:
+  // - For letters: highlight that letter key.
+  // - For symbols that are SHIFTed (! @ _ +): highlight Shift + base key (1,2,-,=)
+  function lightForTarget(ch){
     clearKeyLights();
-    const matches = keyEls.filter(k => k.dataset.key === ch);
-    matches.forEach(m => m.classList.add("lit"));
+
+    // Map shifted symbols to base keys
+    const shiftMap = {
+      "!": "1",
+      "@": "2",
+      "_": "-",
+      "+": "="
+    };
+
+    // If target is shifted, light Shift and base key
+    if (shiftMap[ch]){
+      lightKey("Shift");
+      lightKey(shiftMap[ch]);
+      return;
+    }
+
+    // Otherwise light the key itself
+    lightKey(ch);
   }
 
-  function resetGame(){
-    running = false;
-    clearInterval(secondTimer);
-    timeLeft = TOTAL_SECONDS;
-    timePill.textContent = `Time: ${timeLeft}`;
-    statusEl.textContent = "Press Start to begin!";
-    clearKeyLights();
+  function lightKey(match){
+    const m = String(match);
+    const hits = keyEls.filter(k => {
+      const dk = k.dataset.key;
+      const ds = k.dataset.shift;
+      // dk is main key, ds is shifted symbol for dual keys
+      return dk === m || ds === m;
+    });
+    hits.forEach(h => h.classList.add("lit"));
+  }
 
-    // find start + exit
-    startPos = null; exitPos = null;
-    for(let r=0;r<rows;r++){
-      for(let c=0;c<cols;c++){
-        if (isStart(r,c)) startPos = {r,c};
-        if (isExit(r,c))  exitPos  = {r,c};
-      }
-    }
-    pr = startPos.r; pc = startPos.c;
+  function randFrom(set){
+    return set[Math.floor(Math.random() * set.length)];
+  }
 
-    // dots on every "0"
+  function buildDots(){
+    const set = LEVELS[mode].set;
     dots = new Map();
     for(let r=0;r<rows;r++){
       for(let c=0;c<cols;c++){
         if (GRID[r][c] === "0"){
-          dots.set(keyOf(r,c), LETTERS[Math.floor(Math.random()*LETTERS.length)]);
+          dots.set(keyOf(r,c), randFrom(set));
         }
       }
     }
-
-    draw();
-    updateKeyboardHint(); // light an adjacent letter if possible
   }
 
-  function startGame(){
-    if (running) return;
+  function setTime(seconds){
+    timeLeft = seconds;
+    timePill.textContent = `Time: ${timeLeft}`;
+  }
+
+  function resetGame(newMode){
+    running = false;
+    clearInterval(secondTimer);
+    clearKeyLights();
+
+    mode = newMode;
+
+    // find start
+    startPos = null;
+    for(let r=0;r<rows;r++){
+      for(let c=0;c<cols;c++){
+        if (isStart(r,c)) startPos = {r,c};
+      }
+    }
+    pr = startPos.r; pc = startPos.c;
+
+    // dots
+    buildDots();
+
+    // time
+    setTime(LEVELS[mode].time);
+
+    // instruction text (small mode-specific hint)
+    if (mode === "letters"){
+      helpBox.innerHTML =
+        `✅ <span class="kbd">Type the letter</span> on a dot <span class="kbd">next to Pac-Man</span> to move and eat it.<br/>
+         🎯 Reach the <span class="kbd">RED exit</span> before time runs out!`;
+      statusEl.textContent = "Level 1: Type letters to move!";
+    } else {
+      helpBox.innerHTML =
+        `✅ <span class="kbd">Type the symbol</span> on a dot <span class="kbd">next to Pac-Man</span> to move and eat it.<br/>
+         🎯 Reach the <span class="kbd">RED exit</span> before time runs out!`;
+      statusEl.textContent = "Level 2: Type symbols to move!";
+    }
+
+    draw();
+    updateKeyboardHint();
+    startTimer();
+  }
+
+  function startTimer(){
     running = true;
-    statusEl.textContent = "Go! Type the glowing letter next to Pac-Man!";
+    clearInterval(secondTimer);
     secondTimer = setInterval(() => {
       if (!running) return;
       timeLeft--;
       timePill.textContent = `Time: ${timeLeft}`;
       if (timeLeft <= 0){
         running = false;
-        statusEl.textContent = "⏰ Time’s up! Press Restart and try again.";
+        statusEl.textContent = "⏰ Time’s up! Choose Level 1 or Level 2 to try again.";
         clearKeyLights();
       }
     }, 1000);
@@ -407,16 +537,14 @@
   }
 
   function adjacentTargets(){
-    const dirs = [
-      {dr:-1,dc:0},{dr:1,dc:0},{dr:0,dc:-1},{dr:0,dc:1}
-    ];
+    const dirs = [{dr:-1,dc:0},{dr:1,dc:0},{dr:0,dc:-1},{dr:0,dc:1}];
     const out = [];
     for (const d of dirs){
       const nr = pr + d.dr, nc = pc + d.dc;
       if (!inBounds(nr,nc) || isWall(nr,nc)) continue;
       const k = keyOf(nr,nc);
       if (dots.has(k)){
-        out.push({r:nr,c:nc,letter:dots.get(k)});
+        out.push({r:nr,c:nc,ch:dots.get(k)});
       } else if (isExit(nr,nc)){
         out.push({r:nr,c:nc,exit:true});
       }
@@ -424,46 +552,62 @@
     return out;
   }
 
+  // Hint: light ALL adjacent characters (better for choice)
   function updateKeyboardHint(){
-    if (!running) {
-      // still show a hint key when idle (nice for kids)
-      const adj = adjacentTargets();
-      const firstLetter = adj.find(a => a.letter)?.letter;
-      if (firstLetter) lightKeyFor(firstLetter);
-      return;
+    if (!running){
+      // still light the adjacent options when idle
     }
+    clearKeyLights();
     const adj = adjacentTargets();
-    const firstLetter = adj.find(a => a.letter)?.letter;
-    if (firstLetter) {
-      lightKeyFor(firstLetter);
-    } else {
-      clearKeyLights();
+
+    // If exit is adjacent, also light E (optional) but not needed now.
+    // We'll only light actual dots.
+    const chars = adj.filter(a => a.ch).map(a => a.ch);
+
+    // Light all adjacent chars (and Shift/base if needed)
+    for (const ch of chars){
+      const shiftMap = { "!":"1", "@":"2", "_":"-", "+":"=" };
+      if (shiftMap[ch]){
+        lightKey("Shift");
+        lightKey(shiftMap[ch]);
+      } else {
+        lightKey(ch);
+      }
     }
+
+    // if nothing to light, clear
+    if (!chars.length) clearKeyLights();
   }
 
   function handleKey(e){
     if (!running) return;
 
     const k = e.key;
-    if (!k || k.length !== 1) return;
-    const pressed = k.toLowerCase();
+    if (!k) return;
 
+    // normalize
+    let pressed = k;
+    if (pressed.length === 1){
+      // for letters, lower-case
+      pressed = pressed.toLowerCase();
+    }
+
+    // In symbols mode, accept only allowed symbols
+    // Also accept the actual typed symbol from shift (e.g. "!" not "1")
     const adj = adjacentTargets();
-    const match = adj.find(t => t.letter === pressed);
+    const match = adj.find(t => t.ch === pressed);
 
     if (match){
       pr = match.r; pc = match.c;
-      dots.delete(keyOf(pr,pc)); // eat dot
+      dots.delete(keyOf(pr,pc));
       draw();
 
-      // check win
       if (isExit(pr,pc)) winGame();
-
       updateKeyboardHint();
       return;
     }
 
-    // allow stepping into exit with "e" if adjacent (kid-friendly)
+    // allow stepping into exit if adjacent and they press "e" (kept simple)
     const exitAdj = adj.find(a => a.exit);
     if (exitAdj && pressed === "e"){
       pr = exitAdj.r; pc = exitAdj.c;
@@ -490,17 +634,14 @@
   }
 
   function draw(){
-    // background
     ctx.clearRect(0,0,canvas.width,canvas.height);
     ctx.fillStyle = getCSS("--mazeBg");
     ctx.fillRect(0,0,canvas.width,canvas.height);
 
-    // subtle border
-    ctx.strokeStyle = "rgba(255,255,255,.25)";
+    ctx.strokeStyle = "rgba(255,255,255,.22)";
     ctx.lineWidth = 6;
     ctx.strokeRect(8,8,canvas.width-16,canvas.height-16);
 
-    // walls + paths + exit
     for(let r=0;r<rows;r++){
       for(let c=0;c<cols;c++){
         const {x,y,w,h} = cellRect(r,c);
@@ -533,12 +674,12 @@
       }
     }
 
-    // dots letters
+    // dots
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.font = `900 ${Math.floor(cell*0.44)}px ui-monospace, Menlo, Consolas, monospace`;
 
-    for (const [k,letter] of dots.entries()){
+    for (const [k,ch] of dots.entries()){
       const [r,c] = k.split(",").map(Number);
       const {x,y,w,h} = cellRect(r,c);
 
@@ -548,13 +689,10 @@
       ctx.fill();
 
       ctx.fillStyle = getCSS("--dotText");
-      ctx.fillText(letter.toUpperCase(), x+w/2, y+h/2);
+      ctx.fillText(String(ch).toUpperCase(), x+w/2, y+h/2);
     }
 
-    // Pac-Man
     drawPacman(pr,pc);
-
-    // Highlight adjacent dot squares slightly (visual assist)
     drawAdjHint();
   }
 
@@ -584,27 +722,28 @@
     if (!adj.length) return;
 
     for (const t of adj){
-      if (t.exit) continue;
+      if (!t.ch) continue;
       const {x,y,w,h} = cellRect(t.r,t.c);
-      ctx.strokeStyle = "rgba(255,255,255,.20)";
+      ctx.strokeStyle = "rgba(255,255,255,.18)";
       ctx.lineWidth = 3;
       roundRect(ctx, x+6, y+6, w-12, h-12, 10);
       ctx.stroke();
     }
-
-    const exitAdj = adj.find(a => a.exit);
-    if (exitAdj){
-      statusEl.textContent = "Exit is near! Press E to step into EXIT.";
-    }
   }
 
-  // events
-  startBtn.addEventListener("click", () => { startGame(); updateKeyboardHint(); });
-  restartBtn.addEventListener("click", () => { resetGame(); startGame(); updateKeyboardHint(); });
-  document.addEventListener("keydown", handleKey);
+  // Buttons
+  level1Btn.addEventListener("click", () => resetGame("letters"));
+  level2Btn.addEventListener("click", () => resetGame("symbols"));
 
-  // init
-  resetGame();
+  document.addEventListener("keydown", (e) => {
+    handleKey(e);
+  });
+
+  // Start in idle letters mode (no timer running until choose a level)
+  resetGame("letters");
+  running = false; // stop timer that resetGame starts
+  clearInterval(secondTimer);
+  statusEl.textContent = "Choose Level 1 or Level 2 to begin!";
 })();
 </script>
 </body>
