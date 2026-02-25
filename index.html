@@ -1,189 +1,617 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Kids Typing Zone</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Kids Typing Zone</title>
+  <style>
+    :root{
+      --sky:#A8D8F0;
+      --cloud:#ffffff;
+      --purple:#5b5fc7;
+      --purple2:#7b6ee6;
+      --ink:#26324a;
+      --sun:#ffd166;
+      --peach:#ffb4a2;
+      --mint:#b8f2e6;
+      --block:#fff7d6;
+      --key:#f7fbff;
+      --keyBorder:#c7d7ea;
+      --lit:#ff6b6b;
+      --lit2:#ffd166;
+    }
 
-<style>
-body {
-    margin: 0;
-    font-family: 'Comic Sans MS', cursive;
-    background-color: #a8d8f0; /* soft sky blue */
-    text-align: center;
-}
+    body{
+      margin:0;
+      font-family: "Comic Sans MS", system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+      background: linear-gradient(180deg, var(--sky) 0%, #c8f3ff 60%, #e7fff6 100%);
+      color: var(--ink);
+      text-align:center;
+    }
 
-h1 {
-    font-size: 50px;
-    color: #5b5fc7;
-    margin-top: 20px;
-}
+    .wrap{
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 18px 14px 40px;
+    }
 
-h2 {
-    color: #5b5fc7;
-}
+    /* Header */
+    .title{
+      margin: 10px auto 6px;
+      font-size: clamp(34px, 5vw, 56px);
+      letter-spacing: 1px;
+      color: var(--purple);
+      text-shadow: 0 2px 0 rgba(255,255,255,.7);
+    }
+    .subtitle{
+      margin: 0 0 14px;
+      font-size: clamp(14px, 2.4vw, 18px);
+      color: #3f4aa8;
+      font-weight: 700;
+    }
 
-button {
-    font-size: 20px;
-    padding: 12px 20px;
-    margin: 10px;
-    border-radius: 15px;
-    border: none;
-    cursor: pointer;
-    background-color: #ffd166;
-}
+    .card{
+      background: rgba(255,255,255,.75);
+      border: 2px solid rgba(255,255,255,.9);
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(17,38,74,.12);
+      padding: 16px 16px 18px;
+      backdrop-filter: blur(6px);
+    }
 
-button:hover {
-    background-color: #ffb703;
-}
+    .topbar{
+      display:flex;
+      gap: 10px;
+      align-items:center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
 
-#gameArea {
-    margin-top: 30px;
-}
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.9);
+      border: 2px solid rgba(91,95,199,.25);
+      color: var(--purple);
+      font-weight: 800;
+    }
+    .stats{
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content:center;
+    }
 
-#letters {
-    font-size: 80px;
-    margin: 20px;
-    color: #ff6b6b;
-}
+    button{
+      font-size: 18px;
+      font-weight: 900;
+      padding: 10px 16px;
+      border-radius: 14px;
+      border: 0;
+      cursor:pointer;
+      background: var(--sun);
+      box-shadow: 0 6px 0 rgba(0,0,0,.08);
+    }
+    button:hover{ filter: brightness(0.98); transform: translateY(1px); }
+    button:active{ transform: translateY(2px); }
 
-#timer, #score {
-    font-size: 25px;
-    margin: 10px;
-    color: #5b5fc7;
-}
+    .menuButtons{
+      display:flex;
+      gap: 10px;
+      justify-content:center;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
 
-#smiley {
-    font-size: 80px;
-    margin-top: 20px;
-}
-</style>
+    /* One-line typing area */
+    .lineBox{
+      background: rgba(255,255,255,.95);
+      border: 2px solid rgba(91,95,199,.20);
+      border-radius: 16px;
+      padding: 14px 14px;
+      margin: 14px auto 10px;
+      max-width: 880px;
+    }
+
+    .typingLine{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      font-size: clamp(22px, 3vw, 32px);
+      letter-spacing: 2px;
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: clip;
+      line-height: 1.35;
+      user-select:none;
+      display:flex;
+      align-items: baseline;
+      justify-content:center;
+      gap: 0;
+    }
+
+    .done{
+      color: rgba(38,50,74,.25);
+    }
+    .current{
+      color: var(--lit);
+      background: rgba(255,107,107,.15);
+      border-radius: 8px;
+      padding: 0 6px;
+      margin: 0 2px;
+      font-weight: 900;
+    }
+    .next{
+      color: rgba(38,50,74,.65);
+    }
+
+    .hint{
+      margin-top: 8px;
+      font-weight: 800;
+      color: #3f4aa8;
+    }
+
+    .smiley{
+      font-size: 72px;
+      margin-top: 10px;
+      min-height: 86px;
+    }
+
+    /* Keyboard */
+    .keyboard{
+      margin: 12px auto 0;
+      max-width: 920px;
+      background: rgba(255,255,255,.7);
+      border: 2px solid rgba(255,255,255,.95);
+      border-radius: 18px;
+      padding: 14px 12px;
+    }
+
+    .row{
+      display:flex;
+      justify-content:center;
+      gap: 6px;
+      margin: 6px 0;
+      flex-wrap: nowrap;
+    }
+
+    .key{
+      min-width: 42px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--key);
+      border: 2px solid var(--keyBorder);
+      box-shadow: 0 4px 0 rgba(0,0,0,.06);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight: 900;
+      color: var(--ink);
+      user-select:none;
+      position:relative;
+      font-size: 16px;
+    }
+
+    .key.small{ min-width: 40px; }
+    .key.wide{ min-width: 86px; }
+    .key.space{ min-width: 320px; }
+
+    .key.lit{
+      background: linear-gradient(180deg, rgba(255,209,102,.95), rgba(255,107,107,.85));
+      border-color: rgba(255,107,107,.7);
+      color: #1b2233;
+      box-shadow: 0 0 0 4px rgba(255,107,107,.18), 0 8px 0 rgba(0,0,0,.08);
+      transform: translateY(-1px);
+    }
+
+    .key .sub{
+      position:absolute;
+      bottom: 4px;
+      right: 6px;
+      font-size: 10px;
+      opacity:.55;
+      font-weight: 800;
+    }
+
+    /* Instruction overlay */
+    .overlay{
+      margin: 10px auto 0;
+      max-width: 860px;
+      background: rgba(255,255,255,.85);
+      border: 2px solid rgba(91,95,199,.20);
+      border-radius: 18px;
+      padding: 14px 14px;
+    }
+    .overlay h2{
+      margin: 6px 0 8px;
+      color: var(--purple);
+    }
+    .overlay p{
+      margin: 6px 0;
+      font-weight: 800;
+    }
+    .kbd{
+      display:inline-block;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background: rgba(91,95,199,.12);
+      border: 1px solid rgba(91,95,199,.25);
+      font-weight: 900;
+      color: var(--purple);
+    }
+
+    @media (max-width: 560px){
+      .key.space{ min-width: 220px; }
+      .key{ min-width: 34px; height: 40px; border-radius: 10px; }
+    }
+  </style>
 </head>
 
 <body>
+  <div class="wrap">
+    <div class="title">KIDS ZONE</div>
+    <div class="subtitle">Explore, read and play.</div>
 
-<h1>🎈 Kids Typing Zone 🎈</h1>
+    <div class="card">
+      <div class="topbar">
+        <div class="pill" id="levelPill">Level: —</div>
+        <div class="stats">
+          <div class="pill" id="timePill">Time: 60</div>
+          <div class="pill" id="scorePill">Score: 0</div>
+        </div>
+      </div>
 
-<div id="menu">
-    <h2>Choose a Level</h2>
-    <button onclick="startLetters()">Level 1: Letters</button>
-    <button onclick="startSymbols()">Level 2: Symbols</button>
-</div>
+      <div id="menu">
+        <div class="overlay">
+          <h2>Choose a Level</h2>
+          <div class="menuButtons">
+            <button id="btnLetters">Level 1: Letters</button>
+            <button id="btnSymbols">Level 2: Symbols</button>
+          </div>
+        </div>
+      </div>
 
-<div id="instructions"></div>
+      <div id="instructions" style="display:none;"></div>
 
-<div id="gameArea" style="display:none;">
-    <div id="timer">Time: 60</div>
-    <div id="score">Score: 0</div>
-    <div id="letters"></div>
-</div>
+      <div id="game" style="display:none;">
+        <div class="lineBox">
+          <div class="typingLine" id="typingLine"></div>
+          <div class="hint" id="hintText">Press the glowing key!</div>
+        </div>
 
-<div id="smiley"></div>
+        <div class="keyboard" aria-label="On-screen keyboard">
+          <!-- Row 1 -->
+          <div class="row">
+            <div class="key small" data-key="q">Q</div>
+            <div class="key small" data-key="w">W</div>
+            <div class="key small" data-key="e">E</div>
+            <div class="key small" data-key="r">R</div>
+            <div class="key small" data-key="t">T</div>
+            <div class="key small" data-key="y">Y</div>
+            <div class="key small" data-key="u">U</div>
+            <div class="key small" data-key="i">I</div>
+            <div class="key small" data-key="o">O</div>
+            <div class="key small" data-key="p">P</div>
+          </div>
+
+          <!-- Row 2 -->
+          <div class="row">
+            <div class="key small" data-key="a">A</div>
+            <div class="key small" data-key="s">S</div>
+            <div class="key small" data-key="d">D</div>
+            <div class="key small" data-key="f">F</div>
+            <div class="key small" data-key="g">G</div>
+            <div class="key small" data-key="h">H</div>
+            <div class="key small" data-key="j">J</div>
+            <div class="key small" data-key="k">K</div>
+            <div class="key small" data-key="l">L</div>
+          </div>
+
+          <!-- Row 3 -->
+          <div class="row">
+            <div class="key small" data-key="z">Z</div>
+            <div class="key small" data-key="x">X</div>
+            <div class="key small" data-key="c">C</div>
+            <div class="key small" data-key="v">V</div>
+            <div class="key small" data-key="b">B</div>
+            <div class="key small" data-key="n">N</div>
+            <div class="key small" data-key="m">M</div>
+          </div>
+
+          <!-- Row 4 (symbols + space) -->
+          <div class="row">
+            <div class="key" data-key=".">.</div>
+            <div class="key" data-key=",">,</div>
+            <div class="key" data-key="_">_</div>
+            <div class="key" data-key="!">!</div>
+            <div class="key" data-key="@">@</div>
+            <div class="key space" data-key=" "><span>SPACE</span><span class="sub">␠</span></div>
+          </div>
+        </div>
+
+        <div class="smiley" id="smiley"></div>
+
+        <div class="menuButtons" style="margin-top:14px;">
+          <button id="btnRestart">Restart</button>
+          <button id="btnBack">Back to Levels</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
 <script>
+(() => {
+  // ====== SETTINGS ======
+  const GAME_SECONDS = 60;
+  const WIN_SCORE = 20;
 
-let score = 0;
-let timeLeft = 60;
-let interval;
-let timerInterval;
-let currentText = "";
-let mode = "letters";
+  // For 7–8 years old, keep this manageable:
+  // - 1 or 2 characters are appended every 2 seconds (calmer)
+  const APPEND_EVERY_MS = 2000;
+  const MIN_APPEND = 1;
+  const MAX_APPEND = 2;
 
-const letterSet = "abcdefghijklmnopqrstuvwxyz";
-const symbolSet = ".,_!@";
+  // Letters: you can restrict to home-row first if you want:
+  // const LETTERS = "fj"; // super beginner
+  // const LETTERS = "asdfjkl;"; // home row-ish (but we only show letters on keyboard)
+  const LETTERS = "abcdefghijklmnopqrstuvwxyz";
+  const SYMBOLS = ".,_!@";
+  const SPACE_CHANCE = 0.18; // letters mode only
 
-function showInstructions(text, startFunction) {
-    document.getElementById("menu").style.display = "none";
-    document.getElementById("instructions").innerHTML =
-        "<h2>" + text + "</h2>" +
-        "<button onclick='" + startFunction + "()'>Start Game</button>";
-}
+  // ====== STATE ======
+  let mode = null;                 // "letters" | "symbols"
+  let score = 0;
+  let timeLeft = GAME_SECONDS;
+  let running = false;
 
-function startLetters() {
-    showInstructions(
-        "Type the LETTERS you see on the screen.<br><br>" +
-        "You have 60 seconds!<br>" +
-        "Score 20 points to win a smiley 😊",
-        "beginLetters"
-    );
-}
+  let stream = "";                 // upcoming characters in the 1-line stream
+  let idx = 0;                     // current position in stream
+  let appendTimer = null;
+  let secondTimer = null;
 
-function startSymbols() {
-    showInstructions(
-        "Type the SYMBOLS you see on the screen.<br><br>" +
-        "Only these symbols appear:<br><br> .  ,  _  !  @ <br><br>" +
-        "You have 60 seconds!<br>" +
-        "Score 20 points to win a smiley 😊",
-        "beginSymbols"
-    );
-}
+  // ====== ELEMENTS ======
+  const menu = document.getElementById("menu");
+  const instructions = document.getElementById("instructions");
+  const game = document.getElementById("game");
 
-function beginLetters() {
-    mode = "letters";
-    beginGame();
-}
+  const levelPill = document.getElementById("levelPill");
+  const timePill  = document.getElementById("timePill");
+  const scorePill = document.getElementById("scorePill");
 
-function beginSymbols() {
-    mode = "symbols";
-    beginGame();
-}
+  const typingLine = document.getElementById("typingLine");
+  const hintText = document.getElementById("hintText");
+  const smiley = document.getElementById("smiley");
 
-function beginGame() {
-    score = 0;
-    timeLeft = 60;
-    document.getElementById("instructions").innerHTML = "";
-    document.getElementById("gameArea").style.display = "block";
-    document.getElementById("score").innerText = "Score: 0";
-    document.getElementById("timer").innerText = "Time: 60";
-    document.getElementById("smiley").innerHTML = "";
+  const btnLetters = document.getElementById("btnLetters");
+  const btnSymbols = document.getElementById("btnSymbols");
+  const btnRestart = document.getElementById("btnRestart");
+  const btnBack = document.getElementById("btnBack");
 
-    generateText();
-    interval = setInterval(generateText, 1000);
-    timerInterval = setInterval(updateTimer, 1000);
-}
+  const keyEls = Array.from(document.querySelectorAll(".key"));
 
-function generateText() {
-    let set = (mode === "letters") ? letterSet : symbolSet;
-    let length = Math.floor(Math.random() * 2) + 1;
-    currentText = "";
+  // ====== HELPERS ======
+  function setPills(){
+    timePill.textContent = `Time: ${timeLeft}`;
+    scorePill.textContent = `Score: ${score}`;
+    levelPill.textContent = mode ? `Level: ${mode === "letters" ? "Letters" : "Symbols"}` : "Level: —";
+  }
 
-    for (let i = 0; i < length; i++) {
-        currentText += set[Math.floor(Math.random() * set.length)];
+  function clearKeyLights(){
+    keyEls.forEach(k => k.classList.remove("lit"));
+  }
+
+  function lightKey(ch){
+    clearKeyLights();
+    // space uses data-key=" "
+    const el = keyEls.find(k => k.dataset.key === ch);
+    if (el) el.classList.add("lit");
+  }
+
+  function randomChar(){
+    if (mode === "letters"){
+      if (Math.random() < SPACE_CHANCE) return " ";
+      return LETTERS[Math.floor(Math.random() * LETTERS.length)];
+    }
+    return SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)];
+  }
+
+  function appendChars(){
+    if (!running) return;
+    const count = Math.floor(Math.random() * (MAX_APPEND - MIN_APPEND + 1)) + MIN_APPEND;
+    for (let i=0; i<count; i++) stream += randomChar();
+
+    // Keep the stream from becoming too long (single line)
+    if (stream.length > 60){
+      // Trim old "done" part but keep current pointer stable
+      const keepFrom = Math.max(0, idx - 10);
+      stream = stream.slice(keepFrom);
+      idx = idx - keepFrom;
+      if (idx < 0) idx = 0;
     }
 
-    document.getElementById("letters").innerText = currentText;
-}
+    renderLine();
+  }
 
-function updateTimer() {
-    timeLeft--;
-    document.getElementById("timer").innerText = "Time: " + timeLeft;
+  function renderLine(){
+    // show only one line: done | current | next
+    const done = stream.slice(0, idx);
+    const current = stream[idx] ?? "";
+    const next = stream.slice(idx+1);
 
-    if (timeLeft <= 0) {
-        clearInterval(interval);
-        clearInterval(timerInterval);
-        endGame();
-    }
-}
+    // Put a visible label for space in the stream (for kids)
+    const show = (s) => s.replaceAll(" ", "␠");
 
-function endGame() {
-    document.getElementById("letters").innerText = "";
-    if (score >= 20) {
-        document.getElementById("smiley").innerHTML = "😊🎉 Great Job!";
+    typingLine.innerHTML =
+      `<span class="done">${escapeHTML(show(done))}</span>` +
+      `<span class="current">${escapeHTML(show(current || " "))}</span>` +
+      `<span class="next">${escapeHTML(show(next))}</span>`;
+
+    const target = current || " ";
+    lightKey(target);
+
+    hintText.textContent = (target === " ")
+      ? "Press SPACE (glowing key)!"
+      : "Press the glowing key!";
+  }
+
+  function escapeHTML(str){
+    return str.replace(/[&<>"']/g, m => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
+    }[m]));
+  }
+
+  function showInstructionsFor(chosenMode){
+    mode = chosenMode;
+    setPills();
+
+    menu.style.display = "none";
+    instructions.style.display = "block";
+    game.style.display = "none";
+    smiley.textContent = "";
+
+    if (mode === "letters"){
+      instructions.innerHTML = `
+        <div class="overlay">
+          <h2>Level 1: Letters</h2>
+          <p>Type the <span class="kbd">letters</span> you see in the line.</p>
+          <p>Follow the <span class="kbd">glowing key</span> on the keyboard.</p>
+          <p>You have <span class="kbd">60 seconds</span>. Score <span class="kbd">${WIN_SCORE}</span> to get a smiley 😊</p>
+          <div class="menuButtons">
+            <button id="startBtn">Start</button>
+          </div>
+        </div>
+      `;
     } else {
-        document.getElementById("smiley").innerHTML = "⭐ Try Again!";
+      instructions.innerHTML = `
+        <div class="overlay">
+          <h2>Level 2: Symbols</h2>
+          <p>Only these symbols appear:</p>
+          <p><span class="kbd">.</span> <span class="kbd">,</span> <span class="kbd">_</span> <span class="kbd">!</span> <span class="kbd">@</span></p>
+          <p>Follow the <span class="kbd">glowing key</span> on the keyboard.</p>
+          <p>You have <span class="kbd">60 seconds</span>. Score <span class="kbd">${WIN_SCORE}</span> to get a smiley 😊</p>
+          <div class="menuButtons">
+            <button id="startBtn">Start</button>
+          </div>
+        </div>
+      `;
     }
 
-    document.getElementById("menu").style.display = "block";
-}
+    document.getElementById("startBtn").addEventListener("click", startGame);
+  }
 
-document.addEventListener("keydown", function(e) {
-    if (e.key === currentText) {
-        score++;
-        document.getElementById("score").innerText = "Score: " + score;
-        generateText();
+  function startGame(){
+    // reset
+    running = true;
+    score = 0;
+    timeLeft = GAME_SECONDS;
+    stream = "";
+    idx = 0;
+    smiley.textContent = "";
+
+    instructions.style.display = "none";
+    game.style.display = "block";
+    setPills();
+
+    // pre-fill stream
+    for (let i=0; i<24; i++) stream += randomChar();
+    renderLine();
+
+    // append more chars calmly
+    clearInterval(appendTimer);
+    appendTimer = setInterval(appendChars, APPEND_EVERY_MS);
+
+    // countdown
+    clearInterval(secondTimer);
+    secondTimer = setInterval(() => {
+      if (!running) return;
+      timeLeft--;
+      setPills();
+      if (timeLeft <= 0) endGame();
+    }, 1000);
+  }
+
+  function endGame(){
+    running = false;
+    clearInterval(appendTimer);
+    clearInterval(secondTimer);
+    clearKeyLights();
+
+    if (score >= WIN_SCORE){
+      smiley.textContent = "😊🎉 Great Job!";
+    } else {
+      smiley.textContent = "⭐ Try Again!";
     }
-});
+  }
 
+  function backToMenu(){
+    running = false;
+    clearInterval(appendTimer);
+    clearInterval(secondTimer);
+    clearKeyLights();
+
+    mode = null;
+    setPills();
+
+    menu.style.display = "block";
+    instructions.style.display = "none";
+    game.style.display = "none";
+    instructions.innerHTML = "";
+    smiley.textContent = "";
+  }
+
+  function restart(){
+    if (!mode) return;
+    startGame();
+  }
+
+  // ====== INPUT HANDLING ======
+  document.addEventListener("keydown", (e) => {
+    if (!running) return;
+
+    // Expected char
+    const expected = stream[idx] ?? "";
+    let pressed = e.key;
+
+    // Normalize space
+    if (pressed === "Spacebar") pressed = " ";
+    if (pressed === " ") pressed = " ";
+
+    // Letters: accept lower/upper
+    if (mode === "letters"){
+      if (pressed.length === 1){
+        pressed = pressed.toLowerCase();
+      }
+    }
+
+    // We only score for correct keys we teach:
+    if (pressed === expected){
+      score++;
+      idx++;
+      setPills();
+
+      // If we are near the end, add more immediately
+      if (stream.length - idx < 12) appendChars();
+
+      renderLine();
+
+      if (score >= WIN_SCORE){
+        // show smiley immediately but keep game running (optional)
+        smiley.textContent = "😊";
+      }
+    }
+  });
+
+  // ====== BUTTONS ======
+  btnLetters.addEventListener("click", () => showInstructionsFor("letters"));
+  btnSymbols.addEventListener("click", () => showInstructionsFor("symbols"));
+  btnRestart.addEventListener("click", restart);
+  btnBack.addEventListener("click", backToMenu);
+
+  // init
+  setPills();
+})();
 </script>
-
 </body>
 </html>
