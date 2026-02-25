@@ -39,142 +39,39 @@
       color: var(--ink);
       text-align:center;
       overflow-x: hidden;
+      background: #f3f7ff;
     }
 
-    /* ===== Kids Zone themed background ===== */
+    /* ===== Forest (Aaron & Friends) background ===== */
     .bg{
       position: fixed;
       inset: 0;
-      z-index: -5;
-      background: linear-gradient(180deg, #bfe8ff 0%, #d7f3ff 55%, #eafcff 100%);
+      z-index: -10;
+      background-image: url("forest-bg.png");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      filter: saturate(1.05);
     }
-
-    /* Smiley sun */
-    .sun{
-      position:absolute;
-      top: 28px;
-      right: 40px;
-      width: 110px;
-      height: 110px;
-      border-radius: 999px;
-      background: radial-gradient(circle at 30% 30%, #fff7c9 0%, #ffe06b 55%, #ffd166 100%);
-      box-shadow: 0 14px 30px rgba(255,209,102,.35);
-    }
-    .sun:before, .sun:after{
+    /* Soft glass overlay so text stays readable */
+    .bg::after{
       content:"";
       position:absolute;
-      inset:-14px;
-      border-radius:999px;
+      inset:0;
       background:
-        conic-gradient(from 0deg,
-          rgba(255,209,102,.0) 0 10deg,
-          rgba(255,209,102,.55) 10deg 14deg,
-          rgba(255,209,102,.0) 14deg 30deg);
-      -webkit-mask: radial-gradient(circle, transparent 62%, #000 63%);
-              mask: radial-gradient(circle, transparent 62%, #000 63%);
-      opacity:.8;
-    }
-    .sunFace{
-      position:absolute;
-      inset: 0;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-weight:900;
-      color: rgba(43,51,82,.7);
-      font-size: 34px;
-      transform: translateY(4px);
-      user-select:none;
+        radial-gradient(circle at 50% 15%, rgba(255,255,255,.55) 0%, rgba(255,255,255,.28) 35%, rgba(255,255,255,.18) 60%, rgba(255,255,255,.08) 100%),
+        linear-gradient(180deg, rgba(255,255,255,.28) 0%, rgba(255,255,255,.18) 40%, rgba(255,255,255,.24) 100%);
+      backdrop-filter: blur(2px);
     }
 
-    /* Rainbow */
-    .rainbow{
-      position:absolute;
-      top: 24px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 520px;
-      height: 260px;
-      border-radius: 520px 520px 0 0;
-      background:
-        radial-gradient(circle at 50% 100%,
-          transparent 54%,
-          #ff9bb0 55% 60%,
-          #ffd166 60% 65%,
-          #b8f2e6 65% 70%,
-          #a8d8f0 70% 75%,
-          #8a8df2 75% 80%,
-          transparent 80% 100%);
-      opacity: .85;
-      filter: blur(.2px);
-    }
-
-    /* Clouds */
-    .cloud{
-      position:absolute;
-      background: rgba(255,255,255,.92);
-      border-radius: 999px;
-      box-shadow: 0 10px 25px rgba(0,0,0,.06);
-      border: 2px solid rgba(255,255,255,.85);
-    }
-    .cloud:before, .cloud:after{
-      content:"";
-      position:absolute;
-      background: rgba(255,255,255,.92);
-      border-radius: 999px;
-      border: 2px solid rgba(255,255,255,.85);
-    }
-    .cloud1{ width: 210px; height: 70px; top: 150px; left: 70px; }
-    .cloud1:before{ width: 80px; height: 80px; left: 20px; top: -30px; }
-    .cloud1:after{ width: 110px; height: 110px; left: 80px; top: -55px; }
-
-    .cloud2{ width: 240px; height: 76px; top: 190px; right: 90px; }
-    .cloud2:before{ width: 92px; height: 92px; left: 25px; top: -36px; }
-    .cloud2:after{ width: 120px; height: 120px; left: 96px; top: -60px; }
-
-    .cloud3{ width: 260px; height: 82px; bottom: 120px; left: 110px; opacity:.9; }
-    .cloud3:before{ width: 110px; height: 110px; left: 30px; top: -50px; }
-    .cloud3:after{ width: 140px; height: 140px; left: 110px; top: -70px; }
-
-    /* Letter blocks at bottom */
-    .blocks{
-      position:absolute;
-      bottom: 34px;
-      left: 50%;
-      transform: translateX(-50%);
-      display:flex;
-      gap: 10px;
-      opacity: .85;
-    }
-    .block{
-      width: 70px;
-      height: 70px;
-      border-radius: 14px;
-      background: rgba(255,255,255,.8);
-      border: 3px solid rgba(255,255,255,.9);
-      box-shadow: 0 10px 20px rgba(0,0,0,.08);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-weight: 1000;
-      font-size: 34px;
-      color: rgba(91,95,199,.85);
-      user-select:none;
-    }
-    .block.b1{ background: rgba(255,209,102,.55); }
-    .block.b2{ background: rgba(184,242,230,.62); }
-    .block.b3{ background: rgba(255,155,176,.55); }
-    .block.b4{ background: rgba(138,141,242,.55); }
-
-    /* ===== Page layout ===== */
-    .wrap{ max-width:1200px; margin:0 auto; padding:18px 14px 24px; position:relative; }
+    .wrap{ max-width:1280px; margin:0 auto; padding:18px 14px 24px; position:relative; }
 
     .title{
       margin: 10px auto 6px;
       font-size: clamp(38px, 5.4vw, 64px);
       letter-spacing: 1px;
       color: var(--purple);
-      text-shadow: 0 3px 0 rgba(255,255,255,.8);
+      text-shadow: 0 3px 0 rgba(255,255,255,.85);
       font-weight: 900;
     }
     .subtitle{
@@ -191,7 +88,7 @@
       border-radius: 18px;
       box-shadow: var(--shadow);
       padding: 14px 14px 16px;
-      backdrop-filter: blur(6px);
+      backdrop-filter: blur(8px);
     }
 
     .centerBar{ display:flex; justify-content:center; margin: 6px 0 12px; }
@@ -205,14 +102,14 @@
       font-weight: 900;
       font-size: 18px;
       box-shadow: 0 6px 0 rgba(0,0,0,.05);
-      min-width: 160px;
+      min-width: 170px;
     }
 
-    /* Two-column: Maze left, keyboard right */
+    /* ===== SIDE-BY-SIDE LAYOUT (Maze bigger) ===== */
     .stage{
       display:grid;
-      grid-template-columns: 1.35fr 1fr;
-      gap: 14px;
+      grid-template-columns: 1.75fr 1fr; /* maze gets more space */
+      gap: 16px;
       align-items:start;
       margin-top: 10px;
     }
@@ -224,7 +121,8 @@
 
     canvas{
       width: 100%;
-      max-width: 920px;
+      max-width: 1060px; /* allow larger */
+      min-width: 720px;  /* prevents tiny maze on desktop */
       height: auto;
       border-radius: 18px;
       background: var(--mazeBg);
@@ -232,6 +130,7 @@
       border: 3px solid rgba(255,255,255,.75);
     }
 
+    /* Instruction between maze & keyboard */
     .help{
       margin: 12px auto 10px;
       padding: 12px 12px;
@@ -276,17 +175,21 @@
     button:hover{ filter: brightness(0.98); transform: translateY(1px); }
     button:active{ transform: translateY(2px); }
 
-    /* ===== Laptop-like keyboard ===== */
+    /* ===== Laptop-like keyboard (right column) ===== */
+    .kbdCol{ display:flex; justify-content:flex-end; }
+
     .keyboard{
       width: 100%;
-      background: rgba(255,255,255,.78);
+      max-width: 520px; /* keep keyboard from stretching */
+      background: rgba(255,255,255,.82);
       border: 2px solid rgba(255,255,255,.95);
       border-radius: 18px;
       padding: 14px 12px;
       box-shadow: 0 10px 22px rgba(0,0,0,.10);
       position: sticky;
-      top: 10px; /* keep visible */
+      top: 10px;
     }
+
     .row{
       display:flex;
       justify-content:center;
@@ -294,10 +197,11 @@
       margin: 7px 0;
       flex-wrap: nowrap;
     }
+
     .key{
-      width: 52px;
-      height: 52px;
-      border-radius: 14px;
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
       background: var(--key);
       border: 2px solid var(--keyBorder);
       box-shadow: 0 4px 0 rgba(0,0,0,.06);
@@ -308,22 +212,21 @@
       color: var(--keyInk);
       user-select:none;
       position:relative;
-      font-size: 18px;
       padding: 0 6px;
     }
-    .key.wide{ width: 86px; }
-    .key.xwide{ width: 124px; }
-    .key.space{ width: 290px; }
-    .key.tiny{ width: 44px; }
+    .key.wide{ width: 76px; }
+    .key.xwide{ width: 104px; }
+    .key.space{ width: 240px; }
+    .key.tiny{ width: 40px; }
 
     .key.dual{ font-size: 0; }
     .key .top{
-      position:absolute; top: 8px; left: 10px;
-      font-size: 13px; font-weight: 900; opacity: .92;
+      position:absolute; top: 7px; left: 8px;
+      font-size: 12px; font-weight: 900; opacity: .92;
     }
     .key .bot{
-      position:absolute; bottom: 8px; left: 10px;
-      font-size: 13px; font-weight: 900; opacity: .86;
+      position:absolute; bottom: 7px; left: 8px;
+      font-size: 12px; font-weight: 900; opacity: .86;
     }
     .key .center{ font-size: 18px; font-weight: 900; }
 
@@ -343,37 +246,20 @@
       opacity: .95;
     }
 
-    /* Responsive: stack columns */
+    /* Responsive: stack */
+    @media (max-width: 1100px){
+      canvas{ min-width: 0; }
+    }
     @media (max-width: 980px){
       .stage{ grid-template-columns: 1fr; }
       .mazeCol{ justify-content:center; }
-      .keyboard{ position: relative; top: 0; }
-    }
-    @media (max-width: 840px){
-      .key{ width: 46px; height: 50px; border-radius: 12px; }
-      .key.wide{ width: 70px; }
-      .key.xwide{ width: 98px; }
-      .key.space{ width: 220px; }
-      .key .top, .key .bot{ left: 8px; font-size: 12px; }
+      .keyboard{ max-width: 980px; position: relative; top: 0; }
     }
   </style>
 </head>
 
 <body>
-  <!-- Themed background layer -->
-  <div class="bg">
-    <div class="rainbow"></div>
-    <div class="sun"><div class="sunFace">😊</div></div>
-    <div class="cloud cloud1"></div>
-    <div class="cloud cloud2"></div>
-    <div class="cloud cloud3"></div>
-    <div class="blocks" aria-hidden="true">
-      <div class="block b1">A</div>
-      <div class="block b2">B</div>
-      <div class="block b3">C</div>
-      <div class="block b4">D</div>
-    </div>
-  </div>
+  <div class="bg" aria-hidden="true"></div>
 
   <div class="wrap">
     <div class="title">Maze Munch</div>
@@ -384,10 +270,9 @@
         <div class="pill" id="timePill">Time: 100</div>
       </div>
 
-      <!-- side-by-side -->
       <div class="stage">
         <div class="mazeCol">
-          <canvas id="c" width="920" height="560" aria-label="Maze typing game"></canvas>
+          <canvas id="c" width="1060" height="620" aria-label="Maze typing game"></canvas>
         </div>
 
         <div class="kbdCol">
@@ -463,12 +348,13 @@
               <div class="key wide" data-key="Ctrl"><span class="center">Ctrl</span></div>
             </div>
 
-            <div class="kbdNote" id="kbdNote">Tip: For <span class="kbd">!</span>, <span class="kbd">@</span>, <span class="kbd">_</span>, <span class="kbd">+</span> press <span class="kbd">Shift</span> + key.</div>
+            <div class="kbdNote" id="kbdNote">
+              Tip: For <span class="kbd">!</span>, <span class="kbd">@</span>, <span class="kbd">_</span>, <span class="kbd">+</span> press <span class="kbd">Shift</span> + key.
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- instruction + status -->
       <div class="help" id="helpBox">
         ✅ <span class="kbd">Type the letter</span> on a dot <span class="kbd">next to Pac-Man</span> to move and eat it.<br/>
         🎯 Reach the <span class="kbd">RED exit</span> before time runs out!
@@ -485,7 +371,6 @@
 
 <script>
 (() => {
-  // ===== Maze grid =====
   const GRID = [
     "111111111111111111111",
     "1S0000000100000000001",
@@ -502,26 +387,24 @@
     "111111111111111111111"
   ];
 
-  // Levels
   const LEVELS = {
     letters: { time: 100, set: "abcdefghijklmnopqrstuvwxyz" },
-    symbols: { time: 150, set: "! . @ , = - _ +".split(" ").join("") } // => "!.@,=-_+"
+    symbols: { time: 150, set: "! . @ , = - _ +".split(" ").join("") } // "!.@,=-_+"
   };
 
-  // Canvas
+  const shiftMap = { "!":"1", "@":"2", "_":"-", "+":"=" };
+
   const canvas = document.getElementById("c");
   const ctx = canvas.getContext("2d");
 
-  // UI
   const timePill = document.getElementById("timePill");
   const statusEl = document.getElementById("status");
-  const helpBox = document.getElementById("helpBox");
-  const kbdNote = document.getElementById("kbdNote");
+  const helpBox  = document.getElementById("helpBox");
+  const kbdNote  = document.getElementById("kbdNote");
 
   const level1Btn = document.getElementById("level1Btn");
   const level2Btn = document.getElementById("level2Btn");
 
-  // Keyboard
   const keyEls = Array.from(document.querySelectorAll(".key"));
 
   const rows = GRID.length;
@@ -535,18 +418,15 @@
   const originX = Math.floor((canvas.width - cols*cell) / 2);
   const originY = Math.floor((canvas.height - rows*cell) / 2);
 
-  // State
   let running = false;
   let timeLeft = 100;
   let secondTimer = null;
 
-  let mode = "letters"; // "letters" | "symbols"
-
+  let mode = "letters";
   let startPos = null;
-  let dots = new Map();  // "r,c" -> char
+  let dots = new Map();
   let pr = 0, pc = 0;
 
-  // Helpers
   const keyOf = (r,c) => `${r},${c}`;
   const inBounds = (r,c) => r>=0 && r<rows && c>=0 && c<cols;
   const isWall = (r,c) => GRID[r][c] === "1";
@@ -560,33 +440,13 @@
   function clearKeyLights(){
     keyEls.forEach(k => k.classList.remove("lit"));
   }
-
   function lightKey(match){
     const m = String(match);
-    const hits = keyEls.filter(k => {
-      const dk = k.dataset.key;
-      const ds = k.dataset.shift;
-      return dk === m || ds === m;
-    });
+    const hits = keyEls.filter(k => k.dataset.key === m || k.dataset.shift === m);
     hits.forEach(h => h.classList.add("lit"));
   }
 
-  // For shifted symbols, show Shift + base key
-  const shiftMap = { "!":"1", "@":"2", "_":"-", "+":"=" };
-
-  function lightForTarget(ch){
-    clearKeyLights();
-    if (shiftMap[ch]){
-      lightKey("Shift");
-      lightKey(shiftMap[ch]);
-    } else {
-      lightKey(ch);
-    }
-  }
-
-  function randFrom(set){
-    return set[Math.floor(Math.random() * set.length)];
-  }
+  function randFrom(set){ return set[Math.floor(Math.random() * set.length)]; }
 
   function buildDots(){
     const set = LEVELS[mode].set;
@@ -627,7 +487,6 @@
 
     mode = newMode;
 
-    // find start
     startPos = null;
     for(let r=0;r<rows;r++){
       for(let c=0;c<cols;c++){
@@ -636,13 +495,9 @@
     }
     pr = startPos.r; pc = startPos.c;
 
-    // dots
     buildDots();
-
-    // time
     setTime(LEVELS[mode].time);
 
-    // instructions
     if (mode === "letters"){
       helpBox.innerHTML =
         `✅ <span class="kbd">Type the letter</span> on a dot <span class="kbd">next to Pac-Man</span> to move and eat it.<br/>
@@ -676,16 +531,12 @@
       const nr = pr + d.dr, nc = pc + d.dc;
       if (!inBounds(nr,nc) || isWall(nr,nc)) continue;
       const k = keyOf(nr,nc);
-      if (dots.has(k)){
-        out.push({r:nr,c:nc,ch:dots.get(k)});
-      } else if (isExit(nr,nc)){
-        out.push({r:nr,c:nc,exit:true});
-      }
+      if (dots.has(k)) out.push({r:nr,c:nc,ch:dots.get(k)});
+      else if (isExit(nr,nc)) out.push({r:nr,c:nc,exit:true});
     }
     return out;
   }
 
-  // Light ALL adjacent options on the keyboard
   function updateKeyboardHint(){
     clearKeyLights();
     const adj = adjacentTargets();
@@ -699,7 +550,6 @@
         lightKey(ch);
       }
     }
-    if (!chars.length) clearKeyLights();
   }
 
   function handleKey(e){
@@ -707,8 +557,6 @@
 
     let pressed = e.key;
     if (!pressed) return;
-
-    // normalize letters
     if (pressed.length === 1) pressed = pressed.toLowerCase();
 
     const adj = adjacentTargets();
@@ -718,13 +566,12 @@
       pr = match.r; pc = match.c;
       dots.delete(keyOf(pr,pc));
       draw();
-
       if (isExit(pr,pc)) winGame();
       updateKeyboardHint();
       return;
     }
 
-    // Optional: allow "e" to step into exit if adjacent
+    // optional: allow "e" to step into exit if adjacent
     const exitAdj = adj.find(a => a.exit);
     if (exitAdj && pressed === "e"){
       pr = exitAdj.r; pc = exitAdj.c;
@@ -738,7 +585,6 @@
     const y = originY + r*cell;
     return {x,y,w:cell,h:cell};
   }
-
   function roundRect(ctx, x, y, w, h, r){
     const rr = Math.min(r, w/2, h/2);
     ctx.beginPath();
@@ -791,7 +637,6 @@
       }
     }
 
-    // dots
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.font = `900 ${Math.floor(cell*0.44)}px ui-monospace, Menlo, Consolas, monospace`;
@@ -848,16 +693,12 @@
     }
   }
 
-  // Buttons
   level1Btn.addEventListener("click", () => resetGame("letters"));
   level2Btn.addEventListener("click", () => resetGame("symbols"));
-
   document.addEventListener("keydown", handleKey);
 
-  // Initial idle screen
-  resetGame("letters");
-  running = false;
-  clearInterval(secondTimer);
+  // Initial idle screen (no timer running)
+  draw();
   clearKeyLights();
   statusEl.textContent = "Choose Level 1 or Level 2 to begin!";
 })();
