@@ -3,22 +3,24 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Kids Typing Zone</title>
+  <title>Typing Playground</title>
   <style>
     :root{
       --sky:#A8D8F0;
       --cloud:#ffffff;
       --purple:#5b5fc7;
-      --purple2:#7b6ee6;
-      --ink:#26324a;
-      --sun:#ffd166;
-      --peach:#ffb4a2;
-      --mint:#b8f2e6;
-      --block:#fff7d6;
+      --ink:#23304a;
+
+      --panel: rgba(255,255,255,.82);
+      --panelBorder: rgba(91,95,199,.18);
+
       --key:#f7fbff;
       --keyBorder:#c7d7ea;
-      --lit:#ff6b6b;
-      --lit2:#ffd166;
+
+      --lit1:#ffd166;
+      --lit2:#ff6b6b;
+
+      --softShadow: 0 10px 30px rgba(17,38,74,.12);
     }
 
     body{
@@ -30,12 +32,11 @@
     }
 
     .wrap{
-      max-width: 980px;
+      max-width: 1100px;
       margin: 0 auto;
       padding: 18px 14px 40px;
     }
 
-    /* Header */
     .title{
       margin: 10px auto 6px;
       font-size: clamp(34px, 5vw, 56px);
@@ -47,14 +48,14 @@
       margin: 0 0 14px;
       font-size: clamp(14px, 2.4vw, 18px);
       color: #3f4aa8;
-      font-weight: 700;
+      font-weight: 800;
     }
 
     .card{
-      background: rgba(255,255,255,.75);
-      border: 2px solid rgba(255,255,255,.9);
+      background: var(--panel);
+      border: 2px solid rgba(255,255,255,.95);
       border-radius: 18px;
-      box-shadow: 0 10px 30px rgba(17,38,74,.12);
+      box-shadow: var(--softShadow);
       padding: 16px 16px 18px;
       backdrop-filter: blur(6px);
     }
@@ -74,10 +75,10 @@
       gap: 8px;
       padding: 10px 14px;
       border-radius: 999px;
-      background: rgba(255,255,255,.9);
-      border: 2px solid rgba(91,95,199,.25);
+      background: rgba(255,255,255,.92);
+      border: 2px solid var(--panelBorder);
       color: var(--purple);
-      font-weight: 800;
+      font-weight: 900;
     }
     .stats{
       display:flex;
@@ -93,7 +94,7 @@
       border-radius: 14px;
       border: 0;
       cursor:pointer;
-      background: var(--sun);
+      background: #ffd166;
       box-shadow: 0 6px 0 rgba(0,0,0,.08);
     }
     button:hover{ filter: brightness(0.98); transform: translateY(1px); }
@@ -109,12 +110,12 @@
 
     /* One-line typing area */
     .lineBox{
-      background: rgba(255,255,255,.95);
-      border: 2px solid rgba(91,95,199,.20);
+      background: rgba(255,255,255,.96);
+      border: 2px solid var(--panelBorder);
       border-radius: 16px;
       padding: 14px 14px;
       margin: 14px auto 10px;
-      max-width: 880px;
+      max-width: 980px;
     }
 
     .typingLine{
@@ -132,24 +133,20 @@
       gap: 0;
     }
 
-    .done{
-      color: rgba(38,50,74,.25);
-    }
+    .done{ color: rgba(35,48,74,.25); }
     .current{
-      color: var(--lit);
+      color: var(--lit2);
       background: rgba(255,107,107,.15);
-      border-radius: 8px;
-      padding: 0 6px;
+      border-radius: 10px;
+      padding: 0 8px;
       margin: 0 2px;
       font-weight: 900;
     }
-    .next{
-      color: rgba(38,50,74,.65);
-    }
+    .next{ color: rgba(35,48,74,.62); }
 
     .hint{
       margin-top: 8px;
-      font-weight: 800;
+      font-weight: 900;
       color: #3f4aa8;
     }
 
@@ -162,8 +159,8 @@
     /* Keyboard */
     .keyboard{
       margin: 12px auto 0;
-      max-width: 920px;
-      background: rgba(255,255,255,.7);
+      max-width: 1040px;
+      background: rgba(255,255,255,.72);
       border: 2px solid rgba(255,255,255,.95);
       border-radius: 18px;
       padding: 14px 12px;
@@ -178,8 +175,8 @@
     }
 
     .key{
-      min-width: 42px;
-      height: 44px;
+      min-width: 44px;
+      height: 46px;
       border-radius: 12px;
       background: var(--key);
       border: 2px solid var(--keyBorder);
@@ -192,11 +189,12 @@
       user-select:none;
       position:relative;
       font-size: 16px;
+      padding: 0 6px;
     }
 
-    .key.small{ min-width: 40px; }
-    .key.wide{ min-width: 86px; }
-    .key.space{ min-width: 320px; }
+    .key.wide{ min-width: 88px; }
+    .key.xwide{ min-width: 120px; }
+    .key.space{ min-width: 360px; }
 
     .key.lit{
       background: linear-gradient(180deg, rgba(255,209,102,.95), rgba(255,107,107,.85));
@@ -218,9 +216,9 @@
     /* Instruction overlay */
     .overlay{
       margin: 10px auto 0;
-      max-width: 860px;
-      background: rgba(255,255,255,.85);
-      border: 2px solid rgba(91,95,199,.20);
+      max-width: 960px;
+      background: rgba(255,255,255,.86);
+      border: 2px solid var(--panelBorder);
       border-radius: 18px;
       padding: 14px 14px;
     }
@@ -230,7 +228,7 @@
     }
     .overlay p{
       margin: 6px 0;
-      font-weight: 800;
+      font-weight: 900;
     }
     .kbd{
       display:inline-block;
@@ -242,9 +240,11 @@
       color: var(--purple);
     }
 
-    @media (max-width: 560px){
-      .key.space{ min-width: 220px; }
-      .key{ min-width: 34px; height: 40px; border-radius: 10px; }
+    @media (max-width: 720px){
+      .key.space{ min-width: 240px; }
+      .key{ min-width: 36px; height: 42px; border-radius: 10px; }
+      .key.wide{ min-width: 70px; }
+      .key.xwide{ min-width: 96px; }
     }
   </style>
 </head>
@@ -252,7 +252,7 @@
 <body>
   <div class="wrap">
     <div class="title">KIDS ZONE</div>
-    <div class="subtitle">Explore, read and play.</div>
+    <div class="subtitle">Play. Practise. Power Up!<br>A fun way to build your typing power at Chongfu School.</div>
 
     <div class="card">
       <div class="topbar">
@@ -281,53 +281,93 @@
           <div class="hint" id="hintText">Press the glowing key!</div>
         </div>
 
-        <div class="keyboard" aria-label="On-screen keyboard">
-          <!-- Row 1 -->
+        <!-- FULL KEYBOARD -->
+        <div class="keyboard">
+          <!-- Numbers row -->
           <div class="row">
-            <div class="key small" data-key="q">Q</div>
-            <div class="key small" data-key="w">W</div>
-            <div class="key small" data-key="e">E</div>
-            <div class="key small" data-key="r">R</div>
-            <div class="key small" data-key="t">T</div>
-            <div class="key small" data-key="y">Y</div>
-            <div class="key small" data-key="u">U</div>
-            <div class="key small" data-key="i">I</div>
-            <div class="key small" data-key="o">O</div>
-            <div class="key small" data-key="p">P</div>
+            <div class="key" data-key="`">`</div>
+            <div class="key" data-key="1">1</div>
+            <div class="key" data-key="2">2</div>
+            <div class="key" data-key="3">3</div>
+            <div class="key" data-key="4">4</div>
+            <div class="key" data-key="5">5</div>
+            <div class="key" data-key="6">6</div>
+            <div class="key" data-key="7">7</div>
+            <div class="key" data-key="8">8</div>
+            <div class="key" data-key="9">9</div>
+            <div class="key" data-key="0">0</div>
+            <div class="key" data-key="-">-</div>
+            <div class="key" data-key="=">=</div>
+            <div class="key xwide" data-key="Backspace">Backspace</div>
           </div>
 
-          <!-- Row 2 -->
+          <!-- Q row -->
           <div class="row">
-            <div class="key small" data-key="a">A</div>
-            <div class="key small" data-key="s">S</div>
-            <div class="key small" data-key="d">D</div>
-            <div class="key small" data-key="f">F</div>
-            <div class="key small" data-key="g">G</div>
-            <div class="key small" data-key="h">H</div>
-            <div class="key small" data-key="j">J</div>
-            <div class="key small" data-key="k">K</div>
-            <div class="key small" data-key="l">L</div>
+            <div class="key wide" data-key="Tab">Tab</div>
+            <div class="key" data-key="q">Q</div>
+            <div class="key" data-key="w">W</div>
+            <div class="key" data-key="e">E</div>
+            <div class="key" data-key="r">R</div>
+            <div class="key" data-key="t">T</div>
+            <div class="key" data-key="y">Y</div>
+            <div class="key" data-key="u">U</div>
+            <div class="key" data-key="i">I</div>
+            <div class="key" data-key="o">O</div>
+            <div class="key" data-key="p">P</div>
+            <div class="key" data-key="[">[</div>
+            <div class="key" data-key="]">]</div>
+            <div class="key" data-key="\\">\</div>
           </div>
 
-          <!-- Row 3 -->
+          <!-- A row -->
           <div class="row">
-            <div class="key small" data-key="z">Z</div>
-            <div class="key small" data-key="x">X</div>
-            <div class="key small" data-key="c">C</div>
-            <div class="key small" data-key="v">V</div>
-            <div class="key small" data-key="b">B</div>
-            <div class="key small" data-key="n">N</div>
-            <div class="key small" data-key="m">M</div>
+            <div class="key xwide" data-key="CapsLock">Caps</div>
+            <div class="key" data-key="a">A</div>
+            <div class="key" data-key="s">S</div>
+            <div class="key" data-key="d">D</div>
+            <div class="key" data-key="f">F</div>
+            <div class="key" data-key="g">G</div>
+            <div class="key" data-key="h">H</div>
+            <div class="key" data-key="j">J</div>
+            <div class="key" data-key="k">K</div>
+            <div class="key" data-key="l">L</div>
+            <div class="key" data-key=";">;</div>
+            <div class="key" data-key="'">'</div>
+            <div class="key xwide" data-key="Enter">Enter</div>
           </div>
 
-          <!-- Row 4 (symbols + space) -->
+          <!-- Z row -->
           <div class="row">
+            <div class="key xwide" data-key="ShiftLeft">Shift</div>
+            <div class="key" data-key="z">Z</div>
+            <div class="key" data-key="x">X</div>
+            <div class="key" data-key="c">C</div>
+            <div class="key" data-key="v">V</div>
+            <div class="key" data-key="b">B</div>
+            <div class="key" data-key="n">N</div>
+            <div class="key" data-key="m">M</div>
+            <div class="key" data-key=",">,</div>
+            <div class="key" data-key=".">.</div>
+            <div class="key" data-key="/">/</div>
+            <div class="key xwide" data-key="ShiftRight">Shift</div>
+          </div>
+
+          <!-- Bottom row (we only light SPACE in this game) -->
+          <div class="row">
+            <div class="key wide" data-key="Control">Ctrl</div>
+            <div class="key wide" data-key="Alt">Alt</div>
+            <div class="key space" data-key=" "><span>SPACE</span><span class="sub">sp</span></div>
+            <div class="key wide" data-key="AltGraph">Alt</div>
+            <div class="key wide" data-key="ControlRight">Ctrl</div>
+          </div>
+
+          <!-- Dedicated symbol row (for your symbol level) -->
+          <div class="row" style="margin-top:10px;">
             <div class="key" data-key=".">.</div>
             <div class="key" data-key=",">,</div>
             <div class="key" data-key="_">_</div>
             <div class="key" data-key="!">!</div>
             <div class="key" data-key="@">@</div>
-            <div class="key space" data-key=" "><span>SPACE</span><span class="sub">␠</span></div>
           </div>
         </div>
 
@@ -343,35 +383,35 @@
 
 <script>
 (() => {
-  // ====== SETTINGS ======
+  // ===== SETTINGS =====
   const GAME_SECONDS = 60;
   const WIN_SCORE = 20;
 
-  // For 7–8 years old, keep this manageable:
-  // - 1 or 2 characters are appended every 2 seconds (calmer)
-  const APPEND_EVERY_MS = 2000;
+  // IMPORTANT: We DO NOT auto-remove/skip the target if student doesn't type.
+  // We only add more characters slowly to the right.
+  const APPEND_EVERY_MS = 2500; // slower and calmer
   const MIN_APPEND = 1;
   const MAX_APPEND = 2;
 
-  // Letters: you can restrict to home-row first if you want:
-  // const LETTERS = "fj"; // super beginner
-  // const LETTERS = "asdfjkl;"; // home row-ish (but we only show letters on keyboard)
   const LETTERS = "abcdefghijklmnopqrstuvwxyz";
   const SYMBOLS = ".,_!@";
-  const SPACE_CHANCE = 0.18; // letters mode only
 
-  // ====== STATE ======
-  let mode = null;                 // "letters" | "symbols"
+  const SPACE_CHANCE_LETTERS = 0.15;
+  const SPACE_IN_SYMBOLS = false; // keep symbols clean
+
+  // ===== STATE =====
+  let mode = null;         // "letters" | "symbols"
   let score = 0;
   let timeLeft = GAME_SECONDS;
   let running = false;
 
-  let stream = "";                 // upcoming characters in the 1-line stream
-  let idx = 0;                     // current position in stream
+  let stream = "";
+  let idx = 0;
+
   let appendTimer = null;
   let secondTimer = null;
 
-  // ====== ELEMENTS ======
+  // ===== ELEMENTS =====
   const menu = document.getElementById("menu");
   const instructions = document.getElementById("instructions");
   const game = document.getElementById("game");
@@ -384,14 +424,15 @@
   const hintText = document.getElementById("hintText");
   const smiley = document.getElementById("smiley");
 
-  const btnLetters = document.getElementById("btnLetters");
-  const btnSymbols = document.getElementById("btnSymbols");
-  const btnRestart = document.getElementById("btnRestart");
-  const btnBack = document.getElementById("btnBack");
-
   const keyEls = Array.from(document.querySelectorAll(".key"));
 
-  // ====== HELPERS ======
+  // buttons
+  document.getElementById("btnLetters").addEventListener("click", () => showInstructionsFor("letters"));
+  document.getElementById("btnSymbols").addEventListener("click", () => showInstructionsFor("symbols"));
+  document.getElementById("btnRestart").addEventListener("click", restart);
+  document.getElementById("btnBack").addEventListener("click", backToMenu);
+
+  // ===== HELPERS =====
   function setPills(){
     timePill.textContent = `Time: ${timeLeft}`;
     scorePill.textContent = `Score: ${score}`;
@@ -402,30 +443,45 @@
     keyEls.forEach(k => k.classList.remove("lit"));
   }
 
-  function lightKey(ch){
+  function lightKeyFor(ch){
     clearKeyLights();
-    // space uses data-key=" "
-    const el = keyEls.find(k => k.dataset.key === ch);
-    if (el) el.classList.add("lit");
+
+    // Special mapping for Space/Enter/Backspace etc (if ever used)
+    // For our game, we light letters, symbols, and space only.
+    const key = ch;
+
+    // Find ALL matching (some keys appear twice like "." and ",")
+    const matches = keyEls.filter(k => k.dataset.key === key);
+    if (matches.length) matches.forEach(m => m.classList.add("lit"));
+  }
+
+  function randFrom(set){
+    return set[Math.floor(Math.random() * set.length)];
   }
 
   function randomChar(){
     if (mode === "letters"){
-      if (Math.random() < SPACE_CHANCE) return " ";
-      return LETTERS[Math.floor(Math.random() * LETTERS.length)];
+      if (Math.random() < SPACE_CHANCE_LETTERS) return " ";
+      return randFrom(LETTERS);
     }
-    return SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)];
+    // symbols mode
+    if (SPACE_IN_SYMBOLS && Math.random() < 0.1) return " ";
+    return randFrom(SYMBOLS);
   }
 
   function appendChars(){
     if (!running) return;
+
+    // If the student is stuck at the beginning, don't flood the line too fast.
+    // This slows down further when there's a long queue.
+    if ((stream.length - idx) > 40) return;
+
     const count = Math.floor(Math.random() * (MAX_APPEND - MIN_APPEND + 1)) + MIN_APPEND;
     for (let i=0; i<count; i++) stream += randomChar();
 
-    // Keep the stream from becoming too long (single line)
-    if (stream.length > 60){
-      // Trim old "done" part but keep current pointer stable
-      const keepFrom = Math.max(0, idx - 10);
+    // Keep line manageable (one line)
+    if (stream.length > 70){
+      const keepFrom = Math.max(0, idx - 10); // keep a little history
       stream = stream.slice(keepFrom);
       idx = idx - keepFrom;
       if (idx < 0) idx = 0;
@@ -435,21 +491,18 @@
   }
 
   function renderLine(){
-    // show only one line: done | current | next
     const done = stream.slice(0, idx);
     const current = stream[idx] ?? "";
     const next = stream.slice(idx+1);
 
-    // Put a visible label for space in the stream (for kids)
     const show = (s) => s.replaceAll(" ", "␠");
-
     typingLine.innerHTML =
       `<span class="done">${escapeHTML(show(done))}</span>` +
       `<span class="current">${escapeHTML(show(current || " "))}</span>` +
       `<span class="next">${escapeHTML(show(next))}</span>`;
 
     const target = current || " ";
-    lightKey(target);
+    lightKeyFor(target);
 
     hintText.textContent = (target === " ")
       ? "Press SPACE (glowing key)!"
@@ -467,16 +520,16 @@
     setPills();
 
     menu.style.display = "none";
-    instructions.style.display = "block";
     game.style.display = "none";
+    instructions.style.display = "block";
     smiley.textContent = "";
 
     if (mode === "letters"){
       instructions.innerHTML = `
         <div class="overlay">
           <h2>Level 1: Letters</h2>
-          <p>Type the <span class="kbd">letters</span> you see in the line.</p>
-          <p>Follow the <span class="kbd">glowing key</span> on the keyboard.</p>
+          <p>Type the <span class="kbd">letters</span> in the line (1 line only).</p>
+          <p>Follow the <span class="kbd">glowing key</span> on the full keyboard.</p>
           <p>You have <span class="kbd">60 seconds</span>. Score <span class="kbd">${WIN_SCORE}</span> to get a smiley 😊</p>
           <div class="menuButtons">
             <button id="startBtn">Start</button>
@@ -489,7 +542,7 @@
           <h2>Level 2: Symbols</h2>
           <p>Only these symbols appear:</p>
           <p><span class="kbd">.</span> <span class="kbd">,</span> <span class="kbd">_</span> <span class="kbd">!</span> <span class="kbd">@</span></p>
-          <p>Follow the <span class="kbd">glowing key</span> on the keyboard.</p>
+          <p>Follow the <span class="kbd">glowing key</span>.</p>
           <p>You have <span class="kbd">60 seconds</span>. Score <span class="kbd">${WIN_SCORE}</span> to get a smiley 😊</p>
           <div class="menuButtons">
             <button id="startBtn">Start</button>
@@ -502,7 +555,6 @@
   }
 
   function startGame(){
-    // reset
     running = true;
     score = 0;
     timeLeft = GAME_SECONDS;
@@ -514,15 +566,13 @@
     game.style.display = "block";
     setPills();
 
-    // pre-fill stream
-    for (let i=0; i<24; i++) stream += randomChar();
+    // prefill
+    for (let i=0; i<26; i++) stream += randomChar();
     renderLine();
 
-    // append more chars calmly
     clearInterval(appendTimer);
     appendTimer = setInterval(appendChars, APPEND_EVERY_MS);
 
-    // countdown
     clearInterval(secondTimer);
     secondTimer = setInterval(() => {
       if (!running) return;
@@ -566,11 +616,10 @@
     startGame();
   }
 
-  // ====== INPUT HANDLING ======
+  // ===== INPUT =====
   document.addEventListener("keydown", (e) => {
     if (!running) return;
 
-    // Expected char
     const expected = stream[idx] ?? "";
     let pressed = e.key;
 
@@ -578,36 +627,27 @@
     if (pressed === "Spacebar") pressed = " ";
     if (pressed === " ") pressed = " ";
 
-    // Letters: accept lower/upper
-    if (mode === "letters"){
-      if (pressed.length === 1){
-        pressed = pressed.toLowerCase();
-      }
+    // Letters mode: accept upper/lower
+    if (mode === "letters" && pressed.length === 1){
+      pressed = pressed.toLowerCase();
     }
 
-    // We only score for correct keys we teach:
+    // Only accept correct input; if wrong, do nothing (target stays)
     if (pressed === expected){
       score++;
       idx++;
       setPills();
 
-      // If we are near the end, add more immediately
+      // ensure there's always more ahead
       if (stream.length - idx < 12) appendChars();
 
       renderLine();
 
       if (score >= WIN_SCORE){
-        // show smiley immediately but keep game running (optional)
         smiley.textContent = "😊";
       }
     }
   });
-
-  // ====== BUTTONS ======
-  btnLetters.addEventListener("click", () => showInstructionsFor("letters"));
-  btnSymbols.addEventListener("click", () => showInstructionsFor("symbols"));
-  btnRestart.addEventListener("click", restart);
-  btnBack.addEventListener("click", backToMenu);
 
   // init
   setPills();
