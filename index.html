@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Kids Typing Zone</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Comic Sans MS', cursive;
+    background-color: #a8d8f0; /* soft sky blue */
+    text-align: center;
+}
+
+h1 {
+    font-size: 50px;
+    color: #5b5fc7;
+    margin-top: 20px;
+}
+
+h2 {
+    color: #5b5fc7;
+}
+
+button {
+    font-size: 20px;
+    padding: 12px 20px;
+    margin: 10px;
+    border-radius: 15px;
+    border: none;
+    cursor: pointer;
+    background-color: #ffd166;
+}
+
+button:hover {
+    background-color: #ffb703;
+}
+
+#gameArea {
+    margin-top: 30px;
+}
+
+#letters {
+    font-size: 80px;
+    margin: 20px;
+    color: #ff6b6b;
+}
+
+#timer, #score {
+    font-size: 25px;
+    margin: 10px;
+    color: #5b5fc7;
+}
+
+#smiley {
+    font-size: 80px;
+    margin-top: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🎈 Kids Typing Zone 🎈</h1>
+
+<div id="menu">
+    <h2>Choose a Level</h2>
+    <button onclick="startLetters()">Level 1: Letters</button>
+    <button onclick="startSymbols()">Level 2: Symbols</button>
+</div>
+
+<div id="instructions"></div>
+
+<div id="gameArea" style="display:none;">
+    <div id="timer">Time: 60</div>
+    <div id="score">Score: 0</div>
+    <div id="letters"></div>
+</div>
+
+<div id="smiley"></div>
+
+<script>
+
+let score = 0;
+let timeLeft = 60;
+let interval;
+let timerInterval;
+let currentText = "";
+let mode = "letters";
+
+const letterSet = "abcdefghijklmnopqrstuvwxyz";
+const symbolSet = ".,_!@";
+
+function showInstructions(text, startFunction) {
+    document.getElementById("menu").style.display = "none";
+    document.getElementById("instructions").innerHTML =
+        "<h2>" + text + "</h2>" +
+        "<button onclick='" + startFunction + "()'>Start Game</button>";
+}
+
+function startLetters() {
+    showInstructions(
+        "Type the LETTERS you see on the screen.<br><br>" +
+        "You have 60 seconds!<br>" +
+        "Score 20 points to win a smiley 😊",
+        "beginLetters"
+    );
+}
+
+function startSymbols() {
+    showInstructions(
+        "Type the SYMBOLS you see on the screen.<br><br>" +
+        "Only these symbols appear:<br><br> .  ,  _  !  @ <br><br>" +
+        "You have 60 seconds!<br>" +
+        "Score 20 points to win a smiley 😊",
+        "beginSymbols"
+    );
+}
+
+function beginLetters() {
+    mode = "letters";
+    beginGame();
+}
+
+function beginSymbols() {
+    mode = "symbols";
+    beginGame();
+}
+
+function beginGame() {
+    score = 0;
+    timeLeft = 60;
+    document.getElementById("instructions").innerHTML = "";
+    document.getElementById("gameArea").style.display = "block";
+    document.getElementById("score").innerText = "Score: 0";
+    document.getElementById("timer").innerText = "Time: 60";
+    document.getElementById("smiley").innerHTML = "";
+
+    generateText();
+    interval = setInterval(generateText, 1000);
+    timerInterval = setInterval(updateTimer, 1000);
+}
+
+function generateText() {
+    let set = (mode === "letters") ? letterSet : symbolSet;
+    let length = Math.floor(Math.random() * 2) + 1;
+    currentText = "";
+
+    for (let i = 0; i < length; i++) {
+        currentText += set[Math.floor(Math.random() * set.length)];
+    }
+
+    document.getElementById("letters").innerText = currentText;
+}
+
+function updateTimer() {
+    timeLeft--;
+    document.getElementById("timer").innerText = "Time: " + timeLeft;
+
+    if (timeLeft <= 0) {
+        clearInterval(interval);
+        clearInterval(timerInterval);
+        endGame();
+    }
+}
+
+function endGame() {
+    document.getElementById("letters").innerText = "";
+    if (score >= 20) {
+        document.getElementById("smiley").innerHTML = "😊🎉 Great Job!";
+    } else {
+        document.getElementById("smiley").innerHTML = "⭐ Try Again!";
+    }
+
+    document.getElementById("menu").style.display = "block";
+}
+
+document.addEventListener("keydown", function(e) {
+    if (e.key === currentText) {
+        score++;
+        document.getElementById("score").innerText = "Score: " + score;
+        generateText();
+    }
+});
+
+</script>
+
+</body>
+</html>
