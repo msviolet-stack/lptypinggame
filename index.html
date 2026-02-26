@@ -1,4 +1,4 @@
-ma<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -44,7 +44,7 @@ ma<!doctype html>
       overflow-x:hidden;
     }
 
-    /* Decorative background (no external files needed) */
+    /* Soft decorative background */
     .bg{
       position: fixed;
       inset: 0;
@@ -54,18 +54,6 @@ ma<!doctype html>
         radial-gradient(circle at 85% 25%, rgba(255,155,176,.22) 0%, rgba(255,155,176,0) 50%),
         radial-gradient(circle at 25% 85%, rgba(255,233,168,.28) 0%, rgba(255,233,168,0) 55%),
         linear-gradient(180deg, #fff 0%, #f3f7ff 40%, #eef4ff 100%);
-    }
-    .bg::after{
-      content:"";
-      position:absolute;
-      inset:-30px;
-      background:
-        radial-gradient(circle at 10% 50%, rgba(63,170,120,.18) 0 8px, transparent 9px),
-        radial-gradient(circle at 92% 55%, rgba(230,96,110,.18) 0 8px, transparent 9px),
-        radial-gradient(circle at 85% 78%, rgba(63,170,120,.15) 0 7px, transparent 8px);
-      filter: blur(0.2px);
-      opacity:.8;
-      pointer-events:none;
     }
 
     .wrap{
@@ -98,7 +86,7 @@ ma<!doctype html>
       backdrop-filter: blur(8px);
     }
 
-    /* === Layout like screenshot: Maze top, time middle, keyboard bottom === */
+    /* Layout: Maze top, time middle, keyboard bottom */
     .gameCol{
       display:flex;
       flex-direction:column;
@@ -108,7 +96,7 @@ ma<!doctype html>
     }
 
     .mazeFrame{
-      width: min(980px, 100%);
+      width: min(1020px, 100%);
       border-radius: 20px;
       background: rgba(255,255,255,.74);
       border: 2px solid rgba(255,255,255,.95);
@@ -191,7 +179,7 @@ ma<!doctype html>
     button:hover{ filter: brightness(0.98); transform: translateY(1px); }
     button:active{ transform: translateY(2px); }
 
-    /* === Keyboard centered like screenshot === */
+    /* Keyboard centered */
     .keyboardWrap{
       width: min(760px, 100%);
       background: rgba(255,255,255,.82);
@@ -272,10 +260,10 @@ ma<!doctype html>
     <div class="card">
       <div class="gameCol">
         <div class="mazeFrame">
-          <canvas id="c" width="980" height="520" aria-label="Maze typing game"></canvas>
+          <canvas id="c" width="1020" height="560" aria-label="Maze typing game"></canvas>
         </div>
 
-        <div class="pill" id="timePill">Time: 100</div>
+        <div class="pill" id="timePill">Time: 120</div>
 
         <div class="keyboardWrap hidden" id="keyboardWrap" aria-label="Assisting keyboard">
           <div class="row">
@@ -371,10 +359,16 @@ ma<!doctype html>
 
 <script>
 (() => {
-  // ===== Level setup =====
+  // ===== SETTINGS (as requested) =====
+  const MAZE_CELLS_W = 13;      // Maze size: 13 × 7
+  const MAZE_CELLS_H = 7;
+
+  const DOT_DENSITY = 0.65;     // Dot density
+  const WALL_BREAK_CHANCE = 0.20; // within 0.18–0.22
+
   const LEVELS = {
-    letters: { time: 100, set: "abcdefghijklmnopqrstuvwxyz" },
-    symbols: { time: 150, set: "!.@,=-_+" } // allowed symbols
+    letters: { time: 120, set: "abcdefghijklmnopqrstuvwxyz" },
+    symbols: { time: 180, set: "!.@,=-_+" }
   };
   const shiftMap = { "!":"1", "@":"2", "_":"-", "+":"=" };
 
@@ -394,23 +388,17 @@ ma<!doctype html>
 
   const keyEls = Array.from(document.querySelectorAll(".key"));
 
-  // ===== Maze generation (varies) =====
-  // We generate a perfect maze on a grid of "cells" then convert to wall grid.
-  // mazeCellsW/H controls the maze complexity.
-  const mazeCellsW = 13; // cells across
-  const mazeCellsH = 7; // cells down
-
-  // Wall grid is (2*cells+1) by (2*cells+1)
-  let WALLS = []; // 2D array: 1 wall, 0 path
+  // ===== Maze state =====
+  let WALLS = []; // 2D: 1 wall, 0 path
   let rows = 0, cols = 0;
 
   let running = false;
-  let timeLeft = 100;
+  let timeLeft = LEVELS.letters.time;
   let secondTimer = null;
 
   let mode = "letters";
-  let dots = new Map();    // key "r,c" -> character
-  let pr = 0, pc = 0;      // pacman position in wall grid coords
+  let dots = new Map();    // "r,c" -> char
+  let pr = 0, pc = 0;      // pac position in wall grid coords
   let startPos = null;
   let exitPos = null;
 
@@ -431,20 +419,19 @@ ma<!doctype html>
 
   function randFrom(set){ return set[Math.floor(Math.random() * set.length)]; }
 
-  // Perfect maze generator (recursive backtracker)
+  // ===== Maze generation (kid-friendly) =====
+  // Perfect maze (backtracker) + wall breaks to open it up.
   function generateMaze(){
-    const w = mazeCellsW;
-    const h = mazeCellsH;
+    const w = MAZE_CELLS_W;
+    const h = MAZE_CELLS_H;
 
-    // cell visited grid
     const visited = Array.from({length:h}, () => Array(w).fill(false));
 
-    // build wall grid full of walls
     rows = 2*h + 1;
     cols = 2*w + 1;
     WALLS = Array.from({length: rows}, () => Array(cols).fill(1));
 
-    // carve cell centers as paths
+    // cell centers paths
     for(let cy=0; cy<h; cy++){
       for(let cx=0; cx<w; cx++){
         WALLS[2*cy+1][2*cx+1] = 0;
@@ -457,7 +444,6 @@ ma<!doctype html>
       if (cy<h-1) out.push([cx,cy+1, 0, 1]);
       if (cx>0) out.push([cx-1,cy,-1, 0]);
       if (cx<w-1) out.push([cx+1,cy, 1, 0]);
-      // shuffle
       for(let i=out.length-1;i>0;i--){
         const j = Math.floor(Math.random()*(i+1));
         [out[i],out[j]] = [out[j],out[i]];
@@ -465,13 +451,12 @@ ma<!doctype html>
       return out;
     }
 
-    // start cell
-    const stack = [];
+    // Start from left-middle cell
     let cx = 0;
     let cy = Math.floor(h/2);
     visited[cy][cx] = true;
-    stack.push([cx,cy]);
 
+    const stack = [[cx,cy]];
     while(stack.length){
       const [x,y] = stack[stack.length-1];
       const nbrs = neighbors(x,y).filter(([nx,ny]) => !visited[ny][nx]);
@@ -480,9 +465,8 @@ ma<!doctype html>
         stack.pop();
         continue;
       }
-      const [nx,ny,dx,dy] = nbrs[0];
 
-      // carve wall between (x,y) and (nx,ny)
+      const [nx,ny,dx,dy] = nbrs[0];
       const wx = 2*x+1 + dx;
       const wy = 2*y+1 + dy;
       WALLS[wy][wx] = 0;
@@ -491,38 +475,41 @@ ma<!doctype html>
       stack.push([nx,ny]);
     }
 
-    // Define start and exit on path cells (wall grid coords)
-    startPos = { r: 2*Math.floor(h/2)+1, c: 1 };                 // left side inside
-    exitPos  = { r: 2*Math.floor(h/2)+1, c: cols-2 };            // right side inside
+    // Add "wall breaks" to make it more open/easier
+    for(let r=1; r<rows-1; r++){
+      for(let c=1; c<cols-1; c++){
+        if (WALLS[r][c] === 1 && Math.random() < WALL_BREAK_CHANCE){
+          WALLS[r][c] = 0;
+        }
+      }
+    }
 
-    // Ensure start/exit are paths
+    // Start & exit positions (inside border)
+    startPos = { r: 2*Math.floor(h/2)+1, c: 1 };
+    exitPos  = { r: 2*Math.floor(h/2)+1, c: cols-2 };
+
     WALLS[startPos.r][startPos.c] = 0;
     WALLS[exitPos.r][exitPos.c] = 0;
-
-    // Carve a “door” opening to make exit look accessible
-    WALLS[exitPos.r][cols-1] = 1; // keep border wall
   }
 
   function buildDots(){
     dots = new Map();
     const set = LEVELS[mode].set;
 
-    // place dots on path tiles only (not walls), excluding start and exit
     for(let r=0;r<rows;r++){
       for(let c=0;c<cols;c++){
         if (isWall(r,c)) continue;
         if (r===startPos.r && c===startPos.c) continue;
         if (r===exitPos.r && c===exitPos.c) continue;
 
-        // only place on “cell centers” and corridors; to reduce clutter, skip some
-        // (looks nicer like your screenshot)
-        if (Math.random() < 0.28) continue;
-
-        dots.set(keyOf(r,c), randFrom(set));
+        // place dots at requested density
+        if (Math.random() <= DOT_DENSITY){
+          dots.set(keyOf(r,c), randFrom(set));
+        }
       }
     }
 
-    // Make sure around start has a few dots (so game starts immediately)
+    // Ensure a few dots right next to start (so it feels immediate)
     const near = [
       [startPos.r, startPos.c+1],
       [startPos.r-1, startPos.c],
@@ -535,7 +522,7 @@ ma<!doctype html>
     }
   }
 
-  // ===== Timing + state =====
+  // ===== Timing + round control =====
   function setTime(seconds){
     timeLeft = seconds;
     timePill.textContent = `Time: ${timeLeft}`;
@@ -572,23 +559,11 @@ ma<!doctype html>
   function startLevel(newMode){
     mode = newMode;
 
-    // new random maze each time they click a level
-    generateMaze();
+    generateMaze();  // new maze each time
     buildDots();
 
-    // Make maze more open (kid-friendly)
-// Randomly remove some internal walls
-for(let r=1; r<rows-1; r++){
-  for(let c=1; c<cols-1; c++){
-    if (WALLS[r][c] === 1 && Math.random() < 0.18){
-      WALLS[r][c] = 0;
-    }
-  }
-}
-    // set player to start
     pr = startPos.r; pc = startPos.c;
 
-    // UI copy
     if (mode === "letters"){
       helpBox.innerHTML =
         `✅ <span class="kbd">Type the letter</span> on a dot <span class="kbd">next to Pac-Man</span> to move and eat it.<br/>
@@ -622,6 +597,7 @@ for(let r=1; r<rows-1; r++){
     for (const d of dirs){
       const nr = pr + d.dr, nc = pc + d.dc;
       if (!inBounds(nr,nc) || isWall(nr,nc)) continue;
+
       const k = keyOf(nr,nc);
       if (dots.has(k)) out.push({r:nr,c:nc,ch:dots.get(k)});
       else if (nr===exitPos.r && nc===exitPos.c) out.push({r:nr,c:nc,exit:true});
@@ -649,6 +625,8 @@ for(let r=1; r<rows-1; r++){
 
     let pressed = e.key;
     if (!pressed) return;
+
+    // If key is a single character, normalise to lower for letters
     if (pressed.length === 1) pressed = pressed.toLowerCase();
 
     const adj = adjacentTargets();
@@ -663,7 +641,7 @@ for(let r=1; r<rows-1; r++){
       return;
     }
 
-    // optional: allow pressing "e" to step into exit if adjacent (useful for kids)
+    // Optional: allow pressing "e" to enter exit if adjacent
     const exitAdj = adj.find(a => a.exit);
     if (exitAdj && pressed === "e"){
       pr = exitAdj.r; pc = exitAdj.c;
@@ -695,7 +673,7 @@ for(let r=1; r<rows-1; r++){
     ctx.fillStyle = getCSS("--mazeBg");
     ctx.fillRect(0,0,canvas.width,canvas.height);
 
-    // fit cells into canvas
+    // fit cells into canvas (bigger cell size = easier to see)
     const pad = 18;
     const cell = Math.floor(Math.min(
       (canvas.width - pad*2) / cols,
@@ -712,15 +690,15 @@ for(let r=1; r<rows-1; r++){
     // walls
     for(let r=0;r<rows;r++){
       for(let c=0;c<cols;c++){
+        if (!isWall(r,c)) continue;
         const {x,y,w,h} = cellRect(r,c,cell,ox,oy);
-        if (isWall(r,c)){
-          ctx.fillStyle = getCSS("--wallGlow");
-          ctx.fillRect(x-1,y-1,w+2,h+2);
 
-          ctx.fillStyle = getCSS("--wall");
-          roundRect(ctx, x+2, y+2, w-4, h-4, Math.max(6, cell*0.22));
-          ctx.fill();
-        }
+        ctx.fillStyle = getCSS("--wallGlow");
+        ctx.fillRect(x-1,y-1,w+2,h+2);
+
+        ctx.fillStyle = getCSS("--wall");
+        roundRect(ctx, x+2, y+2, w-4, h-4, Math.max(6, cell*0.22));
+        ctx.fill();
       }
     }
 
@@ -753,7 +731,7 @@ for(let r=1; r<rows-1; r++){
 
       ctx.fillStyle = getCSS("--dotGlow");
       ctx.beginPath();
-      ctx.arc(x+w/2, y+h/2, Math.max(5, cell*0.25), 0, Math.PI*2);
+      ctx.arc(x+w/2, y+h/2, Math.max(6, cell*0.26), 0, Math.PI*2);
       ctx.fill();
 
       ctx.fillStyle = getCSS("--dotText");
@@ -807,7 +785,7 @@ for(let r=1; r<rows-1; r++){
   level2Btn.addEventListener("click", () => startLevel("symbols"));
   document.addEventListener("keydown", handleKey);
 
-  // Initial screen: draw a preview maze (static) but don’t start timer
+  // Initial preview (no timer)
   generateMaze();
   buildDots();
   pr = startPos.r; pc = startPos.c;
