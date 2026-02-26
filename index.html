@@ -1,4 +1,4 @@
-<!doctype html>
+ma<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -397,8 +397,8 @@
   // ===== Maze generation (varies) =====
   // We generate a perfect maze on a grid of "cells" then convert to wall grid.
   // mazeCellsW/H controls the maze complexity.
-  const mazeCellsW = 19; // cells across
-  const mazeCellsH = 11; // cells down
+  const mazeCellsW = 13; // cells across
+  const mazeCellsH = 7; // cells down
 
   // Wall grid is (2*cells+1) by (2*cells+1)
   let WALLS = []; // 2D array: 1 wall, 0 path
@@ -576,6 +576,15 @@
     generateMaze();
     buildDots();
 
+    // Make maze more open (kid-friendly)
+// Randomly remove some internal walls
+for(let r=1; r<rows-1; r++){
+  for(let c=1; c<cols-1; c++){
+    if (WALLS[r][c] === 1 && Math.random() < 0.18){
+      WALLS[r][c] = 0;
+    }
+  }
+}
     // set player to start
     pr = startPos.r; pc = startPos.c;
 
