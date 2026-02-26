@@ -4,14 +4,16 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Maze Munch</title>
+
   <style>
     :root{
-      --purple:#6b6fe8;
-      --purpleDark:#4450d6;
       --ink:#2b3352;
+      --title:#6b6fe8;
+      --titleDark:#4450d6;
 
       --panel: rgba(255,255,255,.86);
       --panelBorder: rgba(107,111,232,.18);
+      --shadow: 0 14px 34px rgba(22,34,68,.16);
 
       --mazeBg:#0c1a33;
       --wall:#4f7dff;
@@ -30,7 +32,7 @@
       --lit1:#ffe9a8;
       --lit2:#ff9bb0;
 
-      --shadow: 0 12px 32px rgba(22,34,68,.14);
+      --radius: 18px;
     }
 
     body{
@@ -38,103 +40,117 @@
       font-family: "Comic Sans MS", system-ui, -apple-system, Segoe UI, Arial, sans-serif;
       color: var(--ink);
       text-align:center;
-      overflow-x: hidden;
       background: #f3f7ff;
+      overflow-x:hidden;
     }
 
-    /* ===== Forest background ===== */
+    /* Decorative background (no external files needed) */
     .bg{
       position: fixed;
       inset: 0;
-      z-index: -10;
-      background-image: url("forest-bg.png");
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      filter: saturate(1.05);
+      z-index:-10;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(107,111,232,.22) 0%, rgba(107,111,232,0) 45%),
+        radial-gradient(circle at 85% 25%, rgba(255,155,176,.22) 0%, rgba(255,155,176,0) 50%),
+        radial-gradient(circle at 25% 85%, rgba(255,233,168,.28) 0%, rgba(255,233,168,0) 55%),
+        linear-gradient(180deg, #fff 0%, #f3f7ff 40%, #eef4ff 100%);
     }
     .bg::after{
       content:"";
       position:absolute;
-      inset:0;
+      inset:-30px;
       background:
-        radial-gradient(circle at 50% 15%, rgba(255,255,255,.55) 0%, rgba(255,255,255,.28) 35%, rgba(255,255,255,.18) 60%, rgba(255,255,255,.08) 100%),
-        linear-gradient(180deg, rgba(255,255,255,.28) 0%, rgba(255,255,255,.18) 40%, rgba(255,255,255,.24) 100%);
-      backdrop-filter: blur(2px);
+        radial-gradient(circle at 10% 50%, rgba(63,170,120,.18) 0 8px, transparent 9px),
+        radial-gradient(circle at 92% 55%, rgba(230,96,110,.18) 0 8px, transparent 9px),
+        radial-gradient(circle at 85% 78%, rgba(63,170,120,.15) 0 7px, transparent 8px);
+      filter: blur(0.2px);
+      opacity:.8;
+      pointer-events:none;
     }
 
-    .wrap{ max-width:1280px; margin:0 auto; padding:18px 14px 24px; position:relative; }
+    .wrap{
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 16px 14px 28px;
+    }
 
     .title{
-      margin: 10px auto 6px;
-      font-size: clamp(38px, 5.4vw, 64px);
-      letter-spacing: 1px;
-      color: var(--purple);
-      text-shadow: 0 3px 0 rgba(255,255,255,.85);
+      margin: 6px 0 2px;
+      font-size: clamp(34px, 5vw, 62px);
       font-weight: 900;
+      letter-spacing: .5px;
+      color: var(--title);
+      text-shadow: 0 3px 0 rgba(255,255,255,.9);
     }
     .subtitle{
       margin: 0 0 10px;
-      font-size: clamp(14px, 2.2vw, 18px);
-      color: var(--purpleDark);
-      font-weight: 800;
-      line-height: 1.35;
+      font-size: clamp(13px, 2vw, 18px);
+      color: var(--titleDark);
+      font-weight: 900;
     }
 
     .card{
       background: var(--panel);
       border: 2px solid rgba(255,255,255,.95);
-      border-radius: 18px;
+      border-radius: var(--radius);
       box-shadow: var(--shadow);
-      padding: 14px 14px 16px;
+      padding: 14px 14px 18px;
       backdrop-filter: blur(8px);
     }
 
-    .centerBar{ display:flex; justify-content:center; margin: 6px 0 12px; }
+    /* === Layout like screenshot: Maze top, time middle, keyboard bottom === */
+    .gameCol{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .mazeFrame{
+      width: min(980px, 100%);
+      border-radius: 20px;
+      background: rgba(255,255,255,.74);
+      border: 2px solid rgba(255,255,255,.95);
+      box-shadow: 0 16px 34px rgba(0,0,0,.14);
+      padding: 12px;
+    }
+
+    canvas{
+      width: 100%;
+      height: auto;
+      display:block;
+      border-radius: 16px;
+      background: var(--mazeBg);
+      border: 3px solid rgba(255,255,255,.75);
+      box-shadow: 0 12px 22px rgba(0,0,0,.15);
+    }
+
     .pill{
-      display:inline-flex; align-items:center; justify-content:center;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
       padding: 10px 18px;
       border-radius: 999px;
       background: rgba(255,255,255,.92);
       border: 2px solid var(--panelBorder);
-      color: var(--purple);
+      color: var(--titleDark);
       font-weight: 900;
       font-size: 18px;
+      min-width: 180px;
       box-shadow: 0 6px 0 rgba(0,0,0,.05);
-      min-width: 170px;
-    }
-
-    /* ===== SIDE-BY-SIDE LAYOUT (Maze bigger) ===== */
-    .stage{
-      display:grid;
-      grid-template-columns: 1.75fr 1fr;
-      gap: 16px;
-      align-items:start;
-      margin-top: 10px;
-    }
-    .mazeCol{ display:flex; justify-content:flex-start; }
-
-    canvas{
-      width: 100%;
-      max-width: 1060px;
-      min-width: 720px;
-      height: auto;
-      border-radius: 18px;
-      background: var(--mazeBg);
-      box-shadow: 0 14px 32px rgba(0,0,0,.18);
-      border: 3px solid rgba(255,255,255,.75);
     }
 
     .help{
-      margin: 12px auto 10px;
+      max-width: 980px;
+      margin: 6px auto 8px;
       padding: 12px 12px;
       border-radius: 16px;
       background: rgba(255,255,255,.92);
       border: 2px solid var(--panelBorder);
       font-weight: 900;
-      color: var(--purpleDark);
+      color: var(--titleDark);
       line-height: 1.4;
-      max-width: 980px;
     }
     .kbd{
       display:inline-block;
@@ -143,55 +159,65 @@
       background: rgba(107,111,232,.12);
       border: 1px solid rgba(107,111,232,.25);
       font-weight: 900;
-      color: var(--purple);
+      color: var(--title);
       white-space: nowrap;
     }
 
     .status{
       font-size: 20px;
       font-weight: 900;
-      margin: 10px 0 0;
-      min-height: 28px;
-      color: var(--purpleDark);
+      margin: 8px 0 0;
+      min-height: 30px;
+      color: var(--titleDark);
     }
 
-    .btnRow{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:12px; }
+    .btnRow{
+      display:flex;
+      gap: 12px;
+      justify-content:center;
+      flex-wrap:wrap;
+      margin-top: 12px;
+    }
     button{
-      font-size: 18px;
+      font-size: 20px;
       font-weight: 900;
-      padding: 10px 16px;
-      border-radius: 14px;
+      padding: 12px 18px;
+      border-radius: 16px;
       border: 0;
       cursor:pointer;
       background: #ffe18b;
-      box-shadow: 0 6px 0 rgba(0,0,0,.08);
+      box-shadow: 0 6px 0 rgba(0,0,0,.10);
     }
     button:hover{ filter: brightness(0.98); transform: translateY(1px); }
     button:active{ transform: translateY(2px); }
 
-    /* ===== Laptop-like keyboard (right column) ===== */
-    .kbdCol{ display:flex; justify-content:flex-end; }
-    .keyboard{
-      width: 100%;
-      max-width: 520px;
+    /* === Keyboard centered like screenshot === */
+    .keyboardWrap{
+      width: min(760px, 100%);
       background: rgba(255,255,255,.82);
       border: 2px solid rgba(255,255,255,.95);
       border-radius: 18px;
-      padding: 14px 12px;
-      box-shadow: 0 10px 22px rgba(0,0,0,.10);
-      position: sticky;
-      top: 10px;
+      padding: 12px 12px 10px;
+      box-shadow: 0 12px 22px rgba(0,0,0,.10);
     }
 
-    .row{ display:flex; justify-content:center; gap: 8px; margin: 7px 0; flex-wrap: nowrap; }
-
+    .row{
+      display:flex;
+      justify-content:center;
+      gap: 8px;
+      margin: 7px 0;
+      flex-wrap: nowrap;
+    }
     .key{
-      width: 46px; height: 46px;
+      width: 46px;
+      height: 46px;
       border-radius: 12px;
       background: var(--key);
       border: 2px solid var(--keyBorder);
       box-shadow: 0 4px 0 rgba(0,0,0,.06);
-      display:flex; align-items:center; justify-content:center;
+      display:flex;
+      align-items:center;
+      justify-content:center;
       font-weight: 900;
       color: var(--keyInk);
       user-select:none;
@@ -219,21 +245,19 @@
     .kbdNote{
       margin-top: 8px;
       font-weight: 900;
-      color: var(--purpleDark);
+      color: var(--titleDark);
       font-size: 14px;
       opacity: .95;
     }
 
-    /* ===== Show/hide logic ===== */
     .hidden{ display:none !important; }
 
-    @media (max-width: 1100px){
-      canvas{ min-width: 0; }
-    }
-    @media (max-width: 980px){
-      .stage{ grid-template-columns: 1fr; }
-      .mazeCol{ justify-content:center; }
-      .keyboard{ max-width: 980px; position: relative; top: 0; }
+    @media (max-width: 760px){
+      .row{ gap:6px; }
+      .key{ width: 40px; height: 44px; }
+      .key.wide{ width: 70px; }
+      .key.xwide{ width: 92px; }
+      .key.space{ width: 200px; }
     }
   </style>
 </head>
@@ -243,140 +267,118 @@
 
   <div class="wrap">
     <div class="title">Maze Munch</div>
-    <div class="subtitle">Play. Practise. Power Up! A fun way to build your typing power at Chongfu School.</div>
+    <div class="subtitle">A fun way to build your typing power at Chongfu School.</div>
 
     <div class="card">
-      <div class="centerBar">
-        <div class="pill" id="timePill">Time: 100</div>
-      </div>
-
-      <!-- GAME AREA (hidden until a level is chosen) -->
-      <div class="stage hidden" id="stage">
-        <div class="mazeCol">
-          <canvas id="c" width="1060" height="620" aria-label="Maze typing game"></canvas>
+      <div class="gameCol">
+        <div class="mazeFrame">
+          <canvas id="c" width="980" height="520" aria-label="Maze typing game"></canvas>
         </div>
 
-        <div class="kbdCol">
-          <div class="keyboard" aria-label="Assisting keyboard">
-            <div class="row">
-              <div class="key dual tiny" data-key="1" data-shift="!"><span class="top">!</span><span class="bot">1</span></div>
-              <div class="key dual tiny" data-key="2" data-shift="@"><span class="top">@</span><span class="bot">2</span></div>
-              <div class="key dual tiny" data-key="3" data-shift="#"><span class="top">#</span><span class="bot">3</span></div>
-              <div class="key dual tiny" data-key="4" data-shift="$"><span class="top">$</span><span class="bot">4</span></div>
-              <div class="key dual tiny" data-key="5" data-shift="%"><span class="top">%</span><span class="bot">5</span></div>
-              <div class="key dual tiny" data-key="6" data-shift="^"><span class="top">^</span><span class="bot">6</span></div>
-              <div class="key dual tiny" data-key="7" data-shift="&"><span class="top">&</span><span class="bot">7</span></div>
-              <div class="key dual tiny" data-key="8" data-shift="*"><span class="top">*</span><span class="bot">8</span></div>
-              <div class="key dual tiny" data-key="9" data-shift="("><span class="top">(</span><span class="bot">9</span></div>
-              <div class="key dual tiny" data-key="0" data-shift=")"><span class="top">)</span><span class="bot">0</span></div>
-              <div class="key dual tiny" data-key="-" data-shift="_"><span class="top">_</span><span class="bot">-</span></div>
-              <div class="key dual tiny" data-key="=" data-shift="+"><span class="top">+</span><span class="bot">=</span></div>
-              <div class="key xwide" data-key="Backspace"><span class="center">Backspace</span></div>
-            </div>
+        <div class="pill" id="timePill">Time: 100</div>
 
-            <div class="row">
-              <div class="key wide" data-key="Tab"><span class="center">Tab</span></div>
-              <div class="key" data-key="q"><span class="center">Q</span></div>
-              <div class="key" data-key="w"><span class="center">W</span></div>
-              <div class="key" data-key="e"><span class="center">E</span></div>
-              <div class="key" data-key="r"><span class="center">R</span></div>
-              <div class="key" data-key="t"><span class="center">T</span></div>
-              <div class="key" data-key="y"><span class="center">Y</span></div>
-              <div class="key" data-key="u"><span class="center">U</span></div>
-              <div class="key" data-key="i"><span class="center">I</span></div>
-              <div class="key" data-key="o"><span class="center">O</span></div>
-              <div class="key" data-key="p"><span class="center">P</span></div>
-              <div class="key dual tiny" data-key="[" data-shift="{"><span class="top">{</span><span class="bot">[</span></div>
-              <div class="key dual tiny" data-key="]" data-shift="}"><span class="top">}</span><span class="bot">]</span></div>
-            </div>
+        <div class="keyboardWrap hidden" id="keyboardWrap" aria-label="Assisting keyboard">
+          <div class="row">
+            <div class="key dual tiny" data-key="1" data-shift="!"><span class="top">!</span><span class="bot">1</span></div>
+            <div class="key dual tiny" data-key="2" data-shift="@"><span class="top">@</span><span class="bot">2</span></div>
+            <div class="key dual tiny" data-key="3" data-shift="#"><span class="top">#</span><span class="bot">3</span></div>
+            <div class="key dual tiny" data-key="4" data-shift="$"><span class="top">$</span><span class="bot">4</span></div>
+            <div class="key dual tiny" data-key="5" data-shift="%"><span class="top">%</span><span class="bot">5</span></div>
+            <div class="key dual tiny" data-key="6" data-shift="^"><span class="top">^</span><span class="bot">6</span></div>
+            <div class="key dual tiny" data-key="7" data-shift="&"><span class="top">&</span><span class="bot">7</span></div>
+            <div class="key dual tiny" data-key="8" data-shift="*"><span class="top">*</span><span class="bot">8</span></div>
+            <div class="key dual tiny" data-key="9" data-shift="("><span class="top">(</span><span class="bot">9</span></div>
+            <div class="key dual tiny" data-key="0" data-shift=")"><span class="top">)</span><span class="bot">0</span></div>
+            <div class="key dual tiny" data-key="-" data-shift="_"><span class="top">_</span><span class="bot">-</span></div>
+            <div class="key dual tiny" data-key="=" data-shift="+"><span class="top">+</span><span class="bot">=</span></div>
+            <div class="key xwide" data-key="Backspace"><span class="center">Backspace</span></div>
+          </div>
 
-            <div class="row">
-              <div class="key xwide" data-key="CapsLock"><span class="center">Caps</span></div>
-              <div class="key" data-key="a"><span class="center">A</span></div>
-              <div class="key" data-key="s"><span class="center">S</span></div>
-              <div class="key" data-key="d"><span class="center">D</span></div>
-              <div class="key" data-key="f"><span class="center">F</span></div>
-              <div class="key" data-key="g"><span class="center">G</span></div>
-              <div class="key" data-key="h"><span class="center">H</span></div>
-              <div class="key" data-key="j"><span class="center">J</span></div>
-              <div class="key" data-key="k"><span class="center">K</span></div>
-              <div class="key" data-key="l"><span class="center">L</span></div>
-              <div class="key dual tiny" data-key=";" data-shift=":"><span class="top">:</span><span class="bot">;</span></div>
-              <div class="key dual tiny" data-key="'" data-shift="&quot;"><span class="top">"</span><span class="bot">'</span></div>
-              <div class="key xwide" data-key="Enter"><span class="center">Enter</span></div>
-            </div>
+          <div class="row">
+            <div class="key wide" data-key="Tab"><span class="center">Tab</span></div>
+            <div class="key" data-key="q"><span class="center">Q</span></div>
+            <div class="key" data-key="w"><span class="center">W</span></div>
+            <div class="key" data-key="e"><span class="center">E</span></div>
+            <div class="key" data-key="r"><span class="center">R</span></div>
+            <div class="key" data-key="t"><span class="center">T</span></div>
+            <div class="key" data-key="y"><span class="center">Y</span></div>
+            <div class="key" data-key="u"><span class="center">U</span></div>
+            <div class="key" data-key="i"><span class="center">I</span></div>
+            <div class="key" data-key="o"><span class="center">O</span></div>
+            <div class="key" data-key="p"><span class="center">P</span></div>
+            <div class="key dual tiny" data-key="[" data-shift="{"><span class="top">{</span><span class="bot">[</span></div>
+            <div class="key dual tiny" data-key="]" data-shift="}"><span class="top">}</span><span class="bot">]</span></div>
+          </div>
 
-            <div class="row">
-              <div class="key xwide" data-key="Shift"><span class="center">Shift</span></div>
-              <div class="key" data-key="z"><span class="center">Z</span></div>
-              <div class="key" data-key="x"><span class="center">X</span></div>
-              <div class="key" data-key="c"><span class="center">C</span></div>
-              <div class="key" data-key="v"><span class="center">V</span></div>
-              <div class="key" data-key="b"><span class="center">B</span></div>
-              <div class="key" data-key="n"><span class="center">N</span></div>
-              <div class="key" data-key="m"><span class="center">M</span></div>
-              <div class="key dual tiny" data-key="," data-shift="&lt;"><span class="top">&lt;</span><span class="bot">,</span></div>
-              <div class="key dual tiny" data-key="." data-shift="&gt;"><span class="top">&gt;</span><span class="bot">.</span></div>
-              <div class="key dual tiny" data-key="/" data-shift="?"><span class="top">?</span><span class="bot">/</span></div>
-              <div class="key xwide" data-key="Shift"><span class="center">Shift</span></div>
-            </div>
+          <div class="row">
+            <div class="key xwide" data-key="CapsLock"><span class="center">Caps</span></div>
+            <div class="key" data-key="a"><span class="center">A</span></div>
+            <div class="key" data-key="s"><span class="center">S</span></div>
+            <div class="key" data-key="d"><span class="center">D</span></div>
+            <div class="key" data-key="f"><span class="center">F</span></div>
+            <div class="key" data-key="g"><span class="center">G</span></div>
+            <div class="key" data-key="h"><span class="center">H</span></div>
+            <div class="key" data-key="j"><span class="center">J</span></div>
+            <div class="key" data-key="k"><span class="center">K</span></div>
+            <div class="key" data-key="l"><span class="center">L</span></div>
+            <div class="key dual tiny" data-key=";" data-shift=":"><span class="top">:</span><span class="bot">;</span></div>
+            <div class="key dual tiny" data-key="'" data-shift="&quot;"><span class="top">"</span><span class="bot">'</span></div>
+            <div class="key xwide" data-key="Enter"><span class="center">Enter</span></div>
+          </div>
 
-            <div class="row">
-              <div class="key wide" data-key="Ctrl"><span class="center">Ctrl</span></div>
-              <div class="key wide" data-key="Alt"><span class="center">Alt</span></div>
-              <div class="key space" data-key=" "><span class="center">SPACE</span></div>
-              <div class="key wide" data-key="Alt"><span class="center">Alt</span></div>
-              <div class="key wide" data-key="Ctrl"><span class="center">Ctrl</span></div>
-            </div>
+          <div class="row">
+            <div class="key xwide" data-key="Shift"><span class="center">Shift</span></div>
+            <div class="key" data-key="z"><span class="center">Z</span></div>
+            <div class="key" data-key="x"><span class="center">X</span></div>
+            <div class="key" data-key="c"><span class="center">C</span></div>
+            <div class="key" data-key="v"><span class="center">V</span></div>
+            <div class="key" data-key="b"><span class="center">B</span></div>
+            <div class="key" data-key="n"><span class="center">N</span></div>
+            <div class="key" data-key="m"><span class="center">M</span></div>
+            <div class="key dual tiny" data-key="," data-shift="&lt;"><span class="top">&lt;</span><span class="bot">,</span></div>
+            <div class="key dual tiny" data-key="." data-shift="&gt;"><span class="top">&gt;</span><span class="bot">.</span></div>
+            <div class="key dual tiny" data-key="/" data-shift="?"><span class="top">?</span><span class="bot">/</span></div>
+            <div class="key xwide" data-key="Shift"><span class="center">Shift</span></div>
+          </div>
 
-            <div class="kbdNote" id="kbdNote">
-              Tip: For <span class="kbd">!</span>, <span class="kbd">@</span>, <span class="kbd">_</span>, <span class="kbd">+</span> press <span class="kbd">Shift</span> + key.
-            </div>
+          <div class="row">
+            <div class="key wide" data-key="Ctrl"><span class="center">Ctrl</span></div>
+            <div class="key wide" data-key="Alt"><span class="center">Alt</span></div>
+            <div class="key space" data-key=" "><span class="center">SPACE</span></div>
+            <div class="key wide" data-key="Alt"><span class="center">Alt</span></div>
+            <div class="key wide" data-key="Ctrl"><span class="center">Ctrl</span></div>
+          </div>
+
+          <div class="kbdNote" id="kbdNote">
+            Tip: For <span class="kbd">!</span>, <span class="kbd">@</span>, <span class="kbd">_</span>, <span class="kbd">+</span> press <span class="kbd">Shift</span> + key.
           </div>
         </div>
-      </div>
 
-      <!-- HELP (hidden until a level is chosen) -->
-      <div class="help hidden" id="helpBox">
-        ✅ <span class="kbd">Type the letter</span> on a dot <span class="kbd">next to Pac-Man</span> to move and eat it.<br/>
-        🎯 Reach the <span class="kbd">RED exit</span> before time runs out!
-      </div>
+        <div class="help hidden" id="helpBox">
+          ✅ <span class="kbd">Type the letter</span> on a dot <span class="kbd">next to Pac-Man</span> to move and eat it.<br/>
+          🎯 Reach the <span class="kbd">RED exit</span> before time runs out!
+        </div>
 
-      <div class="status" id="status">Choose Level 1 or Level 2 to begin!</div>
+        <div class="status" id="status">Choose Level 1 or Level 2 to begin!</div>
 
-      <!-- LEVEL BUTTONS (hide while playing, show when finished) -->
-      <div class="btnRow" id="btnRow">
-        <button id="level1Btn">Level 1 (Letters)</button>
-        <button id="level2Btn">Level 2 (Symbols)</button>
+        <div class="btnRow" id="btnRow">
+          <button id="level1Btn">Level 1 (Letters)</button>
+          <button id="level2Btn">Level 2 (Symbols)</button>
+        </div>
       </div>
     </div>
   </div>
 
 <script>
 (() => {
-  const GRID = [
-    "111111111111111111111",
-    "1S0000000100000000001",
-    "1011111100101111110101",
-    "1000000100001000000101",
-    "1111100111111011110101",
-    "1000100000000010000101",
-    "1010111110111110111101",
-    "1010000010000010000001",
-    "1011111011111011111101",
-    "1000001000001000000001",
-    "1111101110111011111101",
-    "10000000001000000000E1",
-    "111111111111111111111"
-  ];
-
+  // ===== Level setup =====
   const LEVELS = {
     letters: { time: 100, set: "abcdefghijklmnopqrstuvwxyz" },
-    symbols: { time: 150, set: "! . @ , = - _ +".split(" ").join("") } // "!.@,=-_+"
+    symbols: { time: 150, set: "!.@,=-_+" } // allowed symbols
   };
-
   const shiftMap = { "!":"1", "@":"2", "_":"-", "+":"=" };
 
+  // ===== Canvas + UI =====
   const canvas = document.getElementById("c");
   const ctx = canvas.getContext("2d");
 
@@ -384,40 +386,37 @@
   const statusEl = document.getElementById("status");
   const helpBox  = document.getElementById("helpBox");
   const kbdNote  = document.getElementById("kbdNote");
+  const keyboardWrap = document.getElementById("keyboardWrap");
 
   const level1Btn = document.getElementById("level1Btn");
   const level2Btn = document.getElementById("level2Btn");
   const btnRow = document.getElementById("btnRow");
 
-  const stage = document.getElementById("stage");
-
   const keyEls = Array.from(document.querySelectorAll(".key"));
 
-  const rows = GRID.length;
-  const cols = GRID[0].length;
+  // ===== Maze generation (varies) =====
+  // We generate a perfect maze on a grid of "cells" then convert to wall grid.
+  // mazeCellsW/H controls the maze complexity.
+  const mazeCellsW = 19; // cells across
+  const mazeCellsH = 11; // cells down
 
-  const pad = 16;
-  const cell = Math.floor(Math.min(
-    (canvas.width - pad*2) / cols,
-    (canvas.height - pad*2) / rows
-  ));
-  const originX = Math.floor((canvas.width - cols*cell) / 2);
-  const originY = Math.floor((canvas.height - rows*cell) / 2);
+  // Wall grid is (2*cells+1) by (2*cells+1)
+  let WALLS = []; // 2D array: 1 wall, 0 path
+  let rows = 0, cols = 0;
 
   let running = false;
   let timeLeft = 100;
   let secondTimer = null;
 
   let mode = "letters";
+  let dots = new Map();    // key "r,c" -> character
+  let pr = 0, pc = 0;      // pacman position in wall grid coords
   let startPos = null;
-  let dots = new Map();
-  let pr = 0, pc = 0;
+  let exitPos = null;
 
   const keyOf = (r,c) => `${r},${c}`;
   const inBounds = (r,c) => r>=0 && r<rows && c>=0 && c<cols;
-  const isWall = (r,c) => GRID[r][c] === "1";
-  const isStart = (r,c) => GRID[r][c] === "S";
-  const isExit  = (r,c) => GRID[r][c] === "E";
+  const isWall = (r,c) => WALLS[r]?.[c] === 1;
 
   function getCSS(varName){
     return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
@@ -432,44 +431,114 @@
 
   function randFrom(set){ return set[Math.floor(Math.random() * set.length)]; }
 
+  // Perfect maze generator (recursive backtracker)
+  function generateMaze(){
+    const w = mazeCellsW;
+    const h = mazeCellsH;
+
+    // cell visited grid
+    const visited = Array.from({length:h}, () => Array(w).fill(false));
+
+    // build wall grid full of walls
+    rows = 2*h + 1;
+    cols = 2*w + 1;
+    WALLS = Array.from({length: rows}, () => Array(cols).fill(1));
+
+    // carve cell centers as paths
+    for(let cy=0; cy<h; cy++){
+      for(let cx=0; cx<w; cx++){
+        WALLS[2*cy+1][2*cx+1] = 0;
+      }
+    }
+
+    function neighbors(cx,cy){
+      const out = [];
+      if (cy>0) out.push([cx,cy-1, 0,-1]);
+      if (cy<h-1) out.push([cx,cy+1, 0, 1]);
+      if (cx>0) out.push([cx-1,cy,-1, 0]);
+      if (cx<w-1) out.push([cx+1,cy, 1, 0]);
+      // shuffle
+      for(let i=out.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [out[i],out[j]] = [out[j],out[i]];
+      }
+      return out;
+    }
+
+    // start cell
+    const stack = [];
+    let cx = 0;
+    let cy = Math.floor(h/2);
+    visited[cy][cx] = true;
+    stack.push([cx,cy]);
+
+    while(stack.length){
+      const [x,y] = stack[stack.length-1];
+      const nbrs = neighbors(x,y).filter(([nx,ny]) => !visited[ny][nx]);
+
+      if(nbrs.length === 0){
+        stack.pop();
+        continue;
+      }
+      const [nx,ny,dx,dy] = nbrs[0];
+
+      // carve wall between (x,y) and (nx,ny)
+      const wx = 2*x+1 + dx;
+      const wy = 2*y+1 + dy;
+      WALLS[wy][wx] = 0;
+
+      visited[ny][nx] = true;
+      stack.push([nx,ny]);
+    }
+
+    // Define start and exit on path cells (wall grid coords)
+    startPos = { r: 2*Math.floor(h/2)+1, c: 1 };                 // left side inside
+    exitPos  = { r: 2*Math.floor(h/2)+1, c: cols-2 };            // right side inside
+
+    // Ensure start/exit are paths
+    WALLS[startPos.r][startPos.c] = 0;
+    WALLS[exitPos.r][exitPos.c] = 0;
+
+    // Carve a “door” opening to make exit look accessible
+    WALLS[exitPos.r][cols-1] = 1; // keep border wall
+  }
+
   function buildDots(){
-    const set = LEVELS[mode].set;
     dots = new Map();
+    const set = LEVELS[mode].set;
+
+    // place dots on path tiles only (not walls), excluding start and exit
     for(let r=0;r<rows;r++){
       for(let c=0;c<cols;c++){
-        if (GRID[r][c] === "0"){
-          dots.set(keyOf(r,c), randFrom(set));
-        }
+        if (isWall(r,c)) continue;
+        if (r===startPos.r && c===startPos.c) continue;
+        if (r===exitPos.r && c===exitPos.c) continue;
+
+        // only place on “cell centers” and corridors; to reduce clutter, skip some
+        // (looks nicer like your screenshot)
+        if (Math.random() < 0.28) continue;
+
+        dots.set(keyOf(r,c), randFrom(set));
+      }
+    }
+
+    // Make sure around start has a few dots (so game starts immediately)
+    const near = [
+      [startPos.r, startPos.c+1],
+      [startPos.r-1, startPos.c],
+      [startPos.r+1, startPos.c]
+    ];
+    for(const [r,c] of near){
+      if (inBounds(r,c) && !isWall(r,c) && !(r===exitPos.r && c===exitPos.c)){
+        dots.set(keyOf(r,c), randFrom(set));
       }
     }
   }
 
+  // ===== Timing + state =====
   function setTime(seconds){
     timeLeft = seconds;
     timePill.textContent = `Time: ${timeLeft}`;
-  }
-
-  function showGameUI(){
-    stage.classList.remove("hidden");
-    helpBox.classList.remove("hidden");
-    btnRow.classList.add("hidden"); // hide level buttons during play
-
-    // move the screen to the maze after choosing a level
-    canvas.scrollIntoView({ behavior: "smooth", block: "center" });
-  }
-
-  function showChooseLevelUI(message){
-    running = false;
-    clearInterval(secondTimer);
-    clearKeyLights();
-
-    // show buttons again so they can restart
-    btnRow.classList.remove("hidden");
-
-    // keep maze visible (nice for learning), but you can hide it if you want:
-    // stage.classList.add("hidden"); helpBox.classList.add("hidden");
-
-    statusEl.textContent = message;
   }
 
   function startTimer(){
@@ -480,41 +549,51 @@
       timeLeft--;
       timePill.textContent = `Time: ${timeLeft}`;
       if (timeLeft <= 0){
-        showChooseLevelUI("⏰ Time’s up! Choose Level 1 or Level 2 to try again.");
+        endRound("⏰ Time’s up! Choose Level 1 or Level 2 to try again.");
       }
     }, 1000);
   }
 
-  function resetGame(newMode){
+  function showGameUI(){
+    keyboardWrap.classList.remove("hidden");
+    helpBox.classList.remove("hidden");
+    btnRow.classList.add("hidden");
+    canvas.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  function endRound(message){
     running = false;
     clearInterval(secondTimer);
     clearKeyLights();
+    btnRow.classList.remove("hidden");
+    statusEl.textContent = message;
+  }
 
+  function startLevel(newMode){
     mode = newMode;
 
-    startPos = null;
-    for(let r=0;r<rows;r++){
-      for(let c=0;c<cols;c++){
-        if (isStart(r,c)) startPos = {r,c};
-      }
-    }
+    // new random maze each time they click a level
+    generateMaze();
+    buildDots();
+
+    // set player to start
     pr = startPos.r; pc = startPos.c;
 
-    buildDots();
-    setTime(LEVELS[mode].time);
-
+    // UI copy
     if (mode === "letters"){
       helpBox.innerHTML =
         `✅ <span class="kbd">Type the letter</span> on a dot <span class="kbd">next to Pac-Man</span> to move and eat it.<br/>
          🎯 Reach the <span class="kbd">RED exit</span> before time runs out!`;
       statusEl.textContent = "Level 1: Type letters to move!";
-      kbdNote.style.display = "none";
+      kbdNote.classList.add("hidden");
+      setTime(LEVELS.letters.time);
     } else {
       helpBox.innerHTML =
         `✅ <span class="kbd">Type the symbol</span> on a dot <span class="kbd">next to Pac-Man</span> to move and eat it.<br/>
          🎯 Reach the <span class="kbd">RED exit</span> before time runs out!`;
       statusEl.textContent = "Level 2: Type symbols to move!";
-      kbdNote.style.display = "block";
+      kbdNote.classList.remove("hidden");
+      setTime(LEVELS.symbols.time);
     }
 
     showGameUI();
@@ -524,9 +603,10 @@
   }
 
   function winGame(){
-    showChooseLevelUI("🎉 You escaped the maze! Choose Level 1 or Level 2 to play again.");
+    endRound("🎉 You escaped the maze! Choose Level 1 or Level 2 to play again (new maze each time).");
   }
 
+  // ===== Movement logic =====
   function adjacentTargets(){
     const dirs = [{dr:-1,dc:0},{dr:1,dc:0},{dr:0,dc:-1},{dr:0,dc:1}];
     const out = [];
@@ -535,7 +615,7 @@
       if (!inBounds(nr,nc) || isWall(nr,nc)) continue;
       const k = keyOf(nr,nc);
       if (dots.has(k)) out.push({r:nr,c:nc,ch:dots.get(k)});
-      else if (isExit(nr,nc)) out.push({r:nr,c:nc,exit:true});
+      else if (nr===exitPos.r && nc===exitPos.c) out.push({r:nr,c:nc,exit:true});
     }
     return out;
   }
@@ -569,11 +649,12 @@
       pr = match.r; pc = match.c;
       dots.delete(keyOf(pr,pc));
       draw();
-      if (isExit(pr,pc)) winGame();
+      if (pr===exitPos.r && pc===exitPos.c) winGame();
       updateKeyboardHint();
       return;
     }
 
+    // optional: allow pressing "e" to step into exit if adjacent (useful for kids)
     const exitAdj = adj.find(a => a.exit);
     if (exitAdj && pressed === "e"){
       pr = exitAdj.r; pc = exitAdj.c;
@@ -582,11 +663,11 @@
     }
   }
 
-  function cellRect(r,c){
-    const x = originX + c*cell;
-    const y = originY + r*cell;
-    return {x,y,w:cell,h:cell};
+  // ===== Drawing =====
+  function cellRect(r,c,cell,ox,oy){
+    return { x: ox + c*cell, y: oy + r*cell, w: cell, h: cell };
   }
+
   function roundRect(ctx, x, y, w, h, r){
     const rr = Math.min(r, w/2, h/2);
     ctx.beginPath();
@@ -600,70 +681,87 @@
 
   function draw(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    // background
     ctx.fillStyle = getCSS("--mazeBg");
     ctx.fillRect(0,0,canvas.width,canvas.height);
 
+    // fit cells into canvas
+    const pad = 18;
+    const cell = Math.floor(Math.min(
+      (canvas.width - pad*2) / cols,
+      (canvas.height - pad*2) / rows
+    ));
+    const ox = Math.floor((canvas.width - cols*cell) / 2);
+    const oy = Math.floor((canvas.height - rows*cell) / 2);
+
+    // border
     ctx.strokeStyle = "rgba(255,255,255,.22)";
     ctx.lineWidth = 6;
-    ctx.strokeRect(8,8,canvas.width-16,canvas.height-16);
+    ctx.strokeRect(10,10,canvas.width-20,canvas.height-20);
 
+    // walls
     for(let r=0;r<rows;r++){
       for(let c=0;c<cols;c++){
-        const {x,y,w,h} = cellRect(r,c);
-        const ch = GRID[r][c];
-
-        if (ch === "1"){
+        const {x,y,w,h} = cellRect(r,c,cell,ox,oy);
+        if (isWall(r,c)){
           ctx.fillStyle = getCSS("--wallGlow");
           ctx.fillRect(x-1,y-1,w+2,h+2);
 
           ctx.fillStyle = getCSS("--wall");
-          roundRect(ctx, x+2, y+2, w-4, h-4, 8);
+          roundRect(ctx, x+2, y+2, w-4, h-4, Math.max(6, cell*0.22));
           ctx.fill();
-        } else {
-          ctx.fillStyle = "rgba(255,255,255,.02)";
-          ctx.fillRect(x,y,w,h);
-        }
-
-        if (ch === "E"){
-          ctx.fillStyle = "rgba(255,127,158,.25)";
-          roundRect(ctx, x+4, y+4, w-8, h-8, 10); ctx.fill();
-          ctx.strokeStyle = "rgba(255,127,158,.9)";
-          ctx.lineWidth = 3;
-          roundRect(ctx, x+6, y+6, w-12, h-12, 10); ctx.stroke();
-
-          ctx.fillStyle = "rgba(255,255,255,.95)";
-          ctx.font = `900 ${Math.floor(cell*0.45)}px Comic Sans MS, Arial`;
-          ctx.textAlign = "center"; ctx.textBaseline = "middle";
-          ctx.fillText("EXIT", x+w/2, y+h/2);
         }
       }
     }
 
+    // exit tile
+    {
+      const {x,y,w,h} = cellRect(exitPos.r, exitPos.c, cell, ox, oy);
+      ctx.fillStyle = "rgba(255,127,158,.28)";
+      roundRect(ctx, x+3, y+3, w-6, h-6, Math.max(8, cell*0.28));
+      ctx.fill();
+      ctx.strokeStyle = "rgba(255,127,158,.95)";
+      ctx.lineWidth = 3;
+      roundRect(ctx, x+6, y+6, w-12, h-12, Math.max(8, cell*0.28));
+      ctx.stroke();
+
+      ctx.fillStyle = "rgba(255,255,255,.95)";
+      ctx.font = `900 ${Math.floor(cell*0.36)}px Comic Sans MS, Arial`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText("EXIT", x+w/2, y+h/2);
+    }
+
+    // dots
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.font = `900 ${Math.floor(cell*0.44)}px ui-monospace, Menlo, Consolas, monospace`;
+    ctx.font = `900 ${Math.floor(cell*0.36)}px ui-monospace, Menlo, Consolas, monospace`;
 
     for (const [k,ch] of dots.entries()){
       const [r,c] = k.split(",").map(Number);
-      const {x,y,w,h} = cellRect(r,c);
+      const {x,y,w,h} = cellRect(r,c,cell,ox,oy);
 
       ctx.fillStyle = getCSS("--dotGlow");
       ctx.beginPath();
-      ctx.arc(x+w/2, y+h/2, Math.max(6, cell*0.28), 0, Math.PI*2);
+      ctx.arc(x+w/2, y+h/2, Math.max(5, cell*0.25), 0, Math.PI*2);
       ctx.fill();
 
       ctx.fillStyle = getCSS("--dotText");
       ctx.fillText(String(ch).toUpperCase(), x+w/2, y+h/2);
     }
 
-    drawPacman(pr,pc);
-    drawAdjHint();
+    // pacman
+    drawPacman(pr,pc,cell,ox,oy);
+
+    // highlight adjacent
+    drawAdjHint(cell,ox,oy);
   }
 
-  function drawPacman(r,c){
-    const {x,y,w,h} = cellRect(r,c);
+  function drawPacman(r,c,cell,ox,oy){
+    const {x,y,w,h} = cellRect(r,c,cell,ox,oy);
     const cx = x+w/2, cy = y+h/2;
-    const radius = Math.max(10, cell*0.38);
+    const radius = Math.max(10, cell*0.36);
 
     const t = Date.now()/200;
     const mouth = 0.35 + 0.12*Math.abs(Math.sin(t));
@@ -681,31 +779,31 @@
     ctx.fill();
   }
 
-  function drawAdjHint(){
+  function drawAdjHint(cell,ox,oy){
     const adj = adjacentTargets();
     if (!adj.length) return;
 
     for (const t of adj){
       if (!t.ch) continue;
-      const {x,y,w,h} = cellRect(t.r,t.c);
+      const {x,y,w,h} = cellRect(t.r,t.c,cell,ox,oy);
       ctx.strokeStyle = "rgba(255,255,255,.16)";
       ctx.lineWidth = 3;
-      roundRect(ctx, x+6, y+6, w-12, h-12, 10);
+      roundRect(ctx, x+5, y+5, w-10, h-10, Math.max(8, cell*0.28));
       ctx.stroke();
     }
   }
 
-  // Buttons
-  level1Btn.addEventListener("click", () => resetGame("letters"));
-  level2Btn.addEventListener("click", () => resetGame("symbols"));
+  // ===== Wire up =====
+  level1Btn.addEventListener("click", () => startLevel("letters"));
+  level2Btn.addEventListener("click", () => startLevel("symbols"));
   document.addEventListener("keydown", handleKey);
 
-  // Initial idle screen: keep maze hidden until a level is picked
-  // (we still draw once so it's ready when shown)
-  // stage/help already hidden via HTML class
+  // Initial screen: draw a preview maze (static) but don’t start timer
+  generateMaze();
+  buildDots();
+  pr = startPos.r; pc = startPos.c;
   draw();
   clearKeyLights();
-  statusEl.textContent = "Choose Level 1 or Level 2 to begin!";
 })();
 </script>
 </body>
